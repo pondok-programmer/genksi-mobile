@@ -1,12 +1,12 @@
-import { StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+import React from 'react';
+import {store} from './redux';
+import {Provider} from 'react-redux';
+import Navigator from './routes';
 
 export default function App() {
   return (
-    <View>
-      <Text>App</Text>
-    </View>
-  )
+    <Provider store={store}>
+      <Navigator />
+    </Provider>
+  );
 }
-
-const styles = StyleSheet.create({})
