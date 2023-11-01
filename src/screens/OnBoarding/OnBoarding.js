@@ -38,7 +38,7 @@ const styles = StyleSheet.create({
   btnNext: {
     backgroundColor: 'dodgerblue',
     position: 'absolute',
-    bottom: 20,
+    bottom: 30,
     width: '80%',
     alignSelf: 'center',
     elevation: 3,
@@ -53,6 +53,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     textAlign: 'center',
     fontWeight: 'bold',
+    marginHorizontal: 20,
   },
   imgCctv: {
     width: 280,
