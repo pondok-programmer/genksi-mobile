@@ -3,7 +3,7 @@ import {Image, StyleSheet} from 'react-native';
 import {ImgBackground} from '../../assets';
 
 export default function Background() {
-  return <Image source={ImgBackground} style={styles.img} />;
+  return <Image source={ImgBackground} style={styles.img} fadeDuration={300} />;
 }
 
 const styles = StyleSheet.create({
