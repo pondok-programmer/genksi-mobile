@@ -32,8 +32,6 @@ PushNotification.configure({
   requestPermissions: true,
 });
 
-// komentar test
-
 PushNotification.createChannel({
   channelId: 'user-channel',
   channelName: 'User Channel',
