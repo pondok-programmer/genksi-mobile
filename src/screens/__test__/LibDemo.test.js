@@ -1,60 +1,65 @@
-import {StyleSheet, Text, View, Button} from 'react-native';
+import {Button, StyleSheet, Text, View} from 'react-native';
 import React from 'react';
-import EncryptedStorage from 'react-native-encrypted-storage';
-import PushNotification from 'react-native-push-notification';
+import messaging from '@react-native-firebase/messaging';
 
 export default function LibDemo() {
-  async function triggerNotification() {
-    try {
-      const user = await EncryptedStorage.getItem('user');
-      const teknisi = await EncryptedStorage.getItem('teknisi');
-      PushNotification.localNotification({
-        channelId: 'user-channel',
-        title: 'My User Notification Title',
-        message: 'My User Notification Message',
-      });
-      PushNotification.localNotification({
-        channelId: 'tech-channel',
-        title: 'My Tech Notification Title',
-        message: 'My Tech Notification Message',
-      });
-    } catch (error) {
-      console.log(error);
-    }
+  async function sendNotificationtoAquos() {
+    const message = {
+      data: {
+        title: 'Hello',
+        body: 'World',
+      },
+      token: 'the-token',
+    };
+
+    await messaging().sendMessage(message);
+  }
+
+  async function sendNotificationtoSamsung() {
+    const message = {
+      data: {
+        title: 'Hello',
+        body: 'World',
+      },
+      token:
+        'dxOTqgrDTuGRaJ6Lu1Lkk7:APA91bHdV8w17lzcHcHZdsaGS3Y7aHpKlZOurxYqVRHQKZfDMZrGMPixuaWVth_9T-YfcgJ0Ep1f9Z3KJw35U4EQ17SR2iAnQVwFLf46TfPljiuqc6JC5eZ3s8_uDZG10CObLHck-gna',
+    };
+
+    await messaging().sendMessage({});
   }
 
   return (
-    <View>
-      <Button
-        title="save role: user"
-        onPress={() => {
-          EncryptedStorage.setItem('user', 'user');
-        }}
-      />
-      <Button
-        title="get role: user"
-        onPress={() => {
-          EncryptedStorage.getItem('user')
-            .then(value => console.log(value))
-            .catch(err => console.log(err));
-        }}
-      />
-      <Button
-        title="save role: teknisi"
-        onPress={() => {
-          EncryptedStorage.setItem('teknisi', 'teknisi');
-        }}
-      />
-      <Button
-        title="get role: teknisi"
-        onPress={() => {
-          EncryptedStorage.getItem('teknisi')
-            .then(value => console.log(value))
-            .catch(err => console.log(err));
-        }}
-      />
+    <View style={{marginTop: 50}}>
       <Text>LibDemo</Text>
-      <Button title="trigger notification" onPress={triggerNotification} />
+      <Button title="kirim notifikasi ke samsung" onPress={null} />
+      <Button
+        title="get fcm token samsung"
+        onPress={async () => {
+          try {
+            await messaging().registerDeviceForRemoteMessages();
+            const token = await messaging().getToken();
+            console.log('the token samsung:', token);
+          } catch (error) {
+            console.log('the error:', error.message);
+          }
+        }}
+      />
+      <Button
+        title="send notification to aquos"
+        onPress={sendNotificationtoAquos}
+      />
+      <Button
+        title="get fcm token aquos"
+        onPress={async () => {
+          try {
+            await messaging().registerDeviceForRemoteMessages();
+            const token = await messaging().getToken();
+            console.log('the token aquos:', token);
+          } catch (error) {
+            console.log('the error:', error.message);
+          }
+        }}
+      />
     </View>
   );
 }
