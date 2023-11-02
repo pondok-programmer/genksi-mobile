@@ -6,18 +6,19 @@ import {AppRegistry} from 'react-native';
 import App from './src/App';
 import {name as appName} from './app.json';
 import PushNotification, {Importance} from 'react-native-push-notification';
+import messaging from '@react-native-firebase/messaging';
 
 PushNotification.configure({
   onRegister: function (token) {
-    // console.log('TOKEN:', token);
+    console.log('onRegister:', token);
   },
   onNotification: function (notification) {
-    const {foreground, action} = notification;
-    // console.log(notification);
+    console.log('onNotification:', notification);
     notification.finish();
   },
   onAction: function (notification) {
-    const {foreground, action} = notification;
+    console.log('ACTION:', notification.action);
+    console.log('NOTIFICATION:', notification);
   },
   onRegistrationError: function (err) {
     console.error(err.message, err);
@@ -28,7 +29,7 @@ PushNotification.configure({
     sound: true,
   },
   popInitialNotification: true,
-  requestPermissions: Platform.OS === 'ios',
+  requestPermissions: true,
 });
 
 PushNotification.createChannel({
@@ -40,13 +41,15 @@ PushNotification.createChannel({
   vibrate: true,
 });
 
-PushNotification.createChannel({
-  channelId: 'teknisi-channel',
-  channelName: 'Teknisi Channel',
-  channelDescription: 'A channel for teknisi',
-  soundName: 'default',
-  importance: Importance.HIGH,
-  vibrate: true,
-});
+// Check if app was launched in the background and conditionally render null if so
+function HeadlessCheck({isHeadless}) {
+  if (isHeadless) {
+    // App has been launched in the background by iOS, ignore
+    return null;
+  }
 
-AppRegistry.registerComponent(appName, () => App);
+  // Render the app component on foreground launch
+  return <App />;
+}
+
+AppRegistry.registerComponent(appName, () => HeadlessCheck);
