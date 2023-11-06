@@ -9,6 +9,7 @@ export default function Login({navigation}) {
 
   function submitLogin() {
     console.log({email, password});
+    navigation.replace('Home');
   }
 
   return (
