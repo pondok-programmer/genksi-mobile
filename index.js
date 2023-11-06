@@ -10,7 +10,7 @@ import messaging from '@react-native-firebase/messaging';
 
 PushNotification.configure({
   onRegister: function (token) {
-    console.log('onRegister:', token);
+    // console.log('onRegister:', token);
   },
   onNotification: function (notification) {
     console.log('onNotification:', notification);
