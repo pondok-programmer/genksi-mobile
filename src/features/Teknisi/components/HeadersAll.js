@@ -11,12 +11,11 @@ import React, {useState} from 'react';
 import MapView, {PROVIDER_GOOGLE, Marker, Callout} from 'react-native-maps';
 import Geolocation from '@react-native-community/geolocation';
 import axios from 'axios';
-import {ImgprofilePicture} from '../../assets';
-import {Gap} from '../../components';
-import {colors} from '../../utils/constant';
+import {Gap} from '../../../components';
+import {ImgprofilePicture} from '../../../assets';
+import {colors} from '../../../utils/constant';
 
-export default function Home() {
-  const [role, setRole] = useState('user');
+export default function HeadersAll() {
   const [coords, setCoords] = useState({
     latitude: -6.175724,
     longitude: 106.827129,
@@ -44,25 +43,25 @@ export default function Home() {
   const [daftarTeknisi, setDaftarTeknisi] = useState([
     {
       id: 1,
-      name: 'NAMA USER',
-      latitude: -6.18033,
-      longitude: 106.813003,
+      name: 'NAMA KORWIL',
+      latitude: -6.1806536,
+      longitude: 106.8251719,
       device_token:
         'd05UEbhsRQSvPCKqRj46Pv:APA91bFUe9nMkvtGLDiknVRHnd0MfnIm9nC1hjv8TmRCCHCXRG2eAdyeB2ly9KW8Lu7ZQdcTnLbXHNNnlnlU8PS6CWh0uUi4msma289Zgw8L8PbTZYUw-qrp1m6F93ADLnlN8gmNbwg0',
     },
     {
       id: 2,
-      name: 'NAMA USER',
-      latitude: -6.173976,
-      longitude: 106.818664,
+      name: 'NAMA KORWIL',
+      latitude: -6.1806262,
+      longitude: 106.8267702,
       device_token:
         'easdfasdfee1teuOlhOwefwefsdfGBMrDziwYXft_K9lP4STXFroJmmKjJcj7ek7ZunwPmeKbF-AGoLqz-qEGvr-bEUI_3m3x-pVkzrVGHVYG6nlZ-fEC4CDoCxsMwx1h19G2b0PI6IB7J8pXGwefwefwef',
     },
     {
       id: 3,
-      name: 'NAMA USER',
-      latitude: -6.179804,
-      longitude: 106.818006,
+      name: 'NAMA KORWIL',
+      latitude: -6.1817452,
+      longitude: 106.8264973,
       device_token:
         'fasdxcvvdsvfAPA91bGBMrDziwYXft_K9lP4STXFroJmmKjJcj7ek7ZunwPmeKbF-AGoLqz-qEGvr-bEUI_3m3x-pVkzrVGHVYG6nlZ-fEC4CDoCxsMwx1h19G2b0PI6IB7J8pXGLfsadfasdf',
     },
@@ -83,16 +82,19 @@ export default function Home() {
       name: 'CCTV 2000 FULL HD',
       description: 'CCTV berkualitas bagus! Dengan resolusi 4k',
       price: 3000000,
+      stok: '10 Pics',
     },
     {
       name: 'CCTV 4000 FULL HD',
       description: 'CCTV berkualitas bagus! Dengan resolusi 4k',
       price: 5000000,
+      stok: '20 Pics',
     },
     {
       name: 'CCTV 5000 Crystal Clear',
       description: 'CCTV berkualitas bagus! Dengan resolusi 4k',
       price: 7000000,
+      stok: '30 Pics',
     },
   ]);
   function getCCTVProducts(id) {
@@ -103,7 +105,7 @@ export default function Home() {
     try {
       const response = axios.post('http://localhost:3000/send-fcm', {
         device_token: teknisiDetail.device_token,
-        title: `User Rafi Membeli CCTV ${selectedProduct.name}`,
+        title: `Teknisi Rafi Membeli CCTV ${selectedProduct.name}`,
         body: 'Harap periksa ketersediaan produk',
       });
       console.log(response);
@@ -135,9 +137,6 @@ export default function Home() {
             onPress={() => {
               setModalVisible(true);
               setTeknisiDetail(value);
-              // getCCTVProducts(value.id);
-              // setSelectedMarker(v);
-              // dispatch(SetModal(true));
             }}
             coordinate={{
               latitude: value.latitude,
@@ -160,22 +159,7 @@ export default function Home() {
             </View>
             <Text style={styles.textNameTeknisi}>{teknisiDetail.name}</Text>
             <Gap height={20} />
-
-            {role === 'user' && (
-              <Text style={styles.textListProduct}>Daftar Product cctv:</Text>
-            )}
-            {role === 'teknisi' && (
-              <Text style={styles.textListProduct}>
-                Daftar dan stok product cctv:
-              </Text>
-            )}
-            {role == 'korwil' && (
-              <Text style={styles.textListProduct}>
-                Masuk ke Applikasi WhatsApp untuk memulai pembelian product ke
-                distributor
-              </Text>
-            )}
-
+            <Text style={styles.textListProduct}>Stok Product cctv:</Text>
             {productCCTV.map((value, index) => {
               return (
                 <View key={index} style={styles.viewContainer}>
@@ -191,6 +175,7 @@ export default function Home() {
                       <Text style={styles.textProduct}>
                         Harga: {value.price}
                       </Text>
+                      <Text style={styles.textProduct}>STOK: {value.stok}</Text>
                     </View>
                   </View>
                   <View
@@ -198,7 +183,11 @@ export default function Home() {
                       paddingHorizontal: 80,
                       marginBottom: 10,
                     }}>
-                    <Button title="beli" onPress={() => beliCCTV(value)} />
+                    <Button
+                      title="beli"
+                      onPress={() => beliCCTV(value)}
+                      color={'green'}
+                    />
                   </View>
                 </View>
               );

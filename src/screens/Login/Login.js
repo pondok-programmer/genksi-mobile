@@ -1,15 +1,24 @@
 import {StyleSheet, Text, TouchableNativeFeedback, View} from 'react-native';
 import React, {useState} from 'react';
 import {Background, Gap} from '../../components';
-import {FormInput} from '../../features/Auth';
+import {ButtonSubmit, FormInput} from '../../features/Auth';
+import api from '../../services/axiosInstance';
 
 export default function Login({navigation}) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  function submitLogin() {
-    console.log({email, password});
-    navigation.replace('Home');
+  async function submitLogin() {
+    try {
+      const response = await api.post('/register', {email, password});
+      console.log(response);
+    } catch (error) {
+      if (error.response) {
+        console.log('Error ', error.response.data);
+      } else {
+        console.log('error', error.message);
+      }
+    }
   }
 
   return (
@@ -31,19 +40,15 @@ export default function Login({navigation}) {
           autoCapitalize={'none'}
         />
         <Gap height={20} />
-        <TouchableNativeFeedback onPress={submitLogin} useForeground>
-          <View style={styles.btnSubmit}>
-            <Text style={styles.textBtnSubmit}>Masuk</Text>
-          </View>
-        </TouchableNativeFeedback>
+        <ButtonSubmit
+          title="Masuk"
+          onPress={() => navigation.navigate('Home')}
+        />
         <Gap height={10} />
-        <TouchableNativeFeedback
+        <ButtonSubmit
+          title="Daftar"
           onPress={() => navigation.navigate('Register')}
-          useForeground>
-          <View style={styles.btnRegister}>
-            <Text style={styles.textBtnSubmit}>Daftar</Text>
-          </View>
-        </TouchableNativeFeedback>
+        />
       </View>
     </View>
   );
