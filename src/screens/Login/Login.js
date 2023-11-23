@@ -22,7 +22,7 @@ export default function Login({navigation}) {
           placeholder="contoh@email.com"
           autoCapitalize={'none'}
         />
-        <View style={{height: 15}} />
+        <View style={{height: 25}} />
         <FormInput
           onChangeText={setPassword}
           password
