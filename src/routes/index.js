@@ -20,7 +20,7 @@ const Stack = createNativeStackNavigator();
 
 export default function Navigator() {
   const navigation = useNavigation();
-  const [initialRouteName, setInitialRouteName] = useState('Korwil');
+  const [initialRouteName, setInitialRouteName] = useState('SplashScreen');
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
