@@ -1,49 +1,188 @@
-import {StyleSheet, Text, TouchableNativeFeedback, View} from 'react-native';
-import React, {useState} from 'react';
+import {
+  StyleSheet,
+  Text,
+  ToastAndroid,
+  TouchableNativeFeedback,
+  View,
+} from 'react-native';
+import React, {useEffect, useState} from 'react';
 import {Background, Gap} from '../../components';
-import {FormInput} from '../../features/Auth';
+import {ButtonSubmit, FormInput} from '../../features/Auth';
+import api from '../../services/axiosInstance';
+import Geolocation from '@react-native-community/geolocation';
+import axios from 'axios';
+import {useFrom} from 'react-hook-form';
 
 export default function Login({navigation}) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [latitude, setLatitude] = useState('');
+  const [longitude, setLongitude] = useState('');
+  const [emailError, setEmailError] = useState(false);
+  const [passwordError, setPasswordError] = useState(false);
+  const {
+    control,
+    fromState: {errors},
+    handlesubmit,
+  } = useFrom();
 
-  function submitLogin() {
-    console.log({email, password});
-    navigation.replace('Home');
+  const validateEmail = () => {
+    setEmailError(!email);
+  };
+
+  const validatePassword = () => {
+    setPasswordError(!password);
+  };
+
+  async function handleLogin() {
+    var formdata = new FormData();
+    formdata.append('email', email);
+    formdata.append('password', password);
+    formdata.append('latitude', latitude);
+    formdata.append('longitude', longitude);
+
+    var requestOptions = {
+      method: 'POST',
+      body: formdata,
+      redirect: 'follow',
+    };
+
+    fetch('https://genksi.ejctechnology.com/api/login', requestOptions)
+      .then(response => response.text())
+      .then(result => {
+        console.log(result);
+      })
+      .catch(error => {
+        console.log('error', error.message);
+      });
   }
+
+  // const submitLogin = async () => {
+  //   if (!email || !password) {
+  //     console.log('Email atau password kosong');
+  //     setEmailError(!email);
+  //     setPasswordError(!password);
+  //     ToastAndroid.show('email dan password harus diisi.', ToastAndroid.SHORT);
+  //     return;
+  //   }
+
+  //   try {
+  //     const response = await axios.post(
+  //       'https://genksi.ejctechnology.com/api/login',
+  //       JSON.stringify({
+  //         email,
+  //         password,
+  //         latitude,
+  //         longitude,
+  //       }),
+  //     );
+  //     console.log('response', response);
+
+  // if (response.data.authorization && response.data.user) {
+  //   // Jika autentikasi berhasil
+  //   navigation.navigate('Home');
+  //   ToastAndroid.show('Selamat datang', ToastAndroid.LONG);
+  // } else {
+  //   // Jika autentikasi gagal
+  //   ToastAndroid.show('Email atau password salah!', ToastAndroid.LONG);
+  // }
+  // } catch (error) {
+  //     if (error.response) {
+  //       // Handle error responses from the server
+  //       console.log('Error ', error.response.data);
+  //       ToastAndroid.show('Terjadi kesalahan dari server', ToastAndroid.LONG);
+  //     } else {
+  //       // Handle other types of errors
+  //       console.log('error cource code', error.message);
+  //       ToastAndroid.show('Terjadi kesalahan', ToastAndroid.LONG);
+  //     }
+  //   }
+  // };
+
+  const emailErrorMessage = emailError ? 'email wajib diisi' : '';
+  const passwordErrorMessage = passwordError ? 'password wajib diisi' : '';
+
+  useEffect(() => {
+    getLocation();
+  }, []);
+
+  // Fungsi untuk mendapatkan data geolokasi
+  const getLocation = () => {
+    Geolocation.getCurrentPosition(
+      position => {
+        const {latitude, longitude} = position.coords;
+        setLatitude(latitude.toString());
+        setLongitude(longitude.toString());
+      },
+      error => {
+        console.log(error.message);
+        ToastAndroid.show('Gagal mengambil lokasi', ToastAndroid.LONG);
+      },
+    );
+  };
 
   return (
     <View style={{flex: 1}}>
       <Background />
       <View style={styles.container}>
-        <Text style={styles.textTitle}>Login</Text>
+        {/* text login */}
+        <View style={{alignItems: 'center'}}>
+          <Text style={styles.textTitle}>Login</Text>
+        </View>
         <View style={{height: 20}} />
-        <FormInput
-          onChangeText={setEmail}
-          placeholder="contoh@email.com"
-          autoCapitalize={'none'}
-        />
+
+        {/* textInput email dan text warning email */}
+        <Text style={{color: 'red', textAlign: 'left', marginLeft: 40}}>
+          {emailErrorMessage}
+        </Text>
+        <View style={{alignItems: 'center'}}>
+          <FormInput
+            onChangeText={text => {
+              setEmail(text);
+              setEmailError(false);
+            }}
+            placeholder="contoh@email.com"
+            autoCapitalize={'none'}
+            errors={errors}
+            control={control}
+          />
+        </View>
         <View style={{height: 15}} />
-        <FormInput
-          onChangeText={setPassword}
-          password
-          iconName="lock"
-          autoCapitalize={'none'}
-        />
+
+        {/* textInput password dan text warning password */}
+        <Text style={{color: 'red', textAlign: 'left', marginLeft: 40}}>
+          {passwordErrorMessage}
+        </Text>
+        <View style={{alignItems: 'center'}}>
+          <FormInput
+            onChangeText={text => {
+              setPassword(text);
+              setPasswordError(false);
+            }}
+            password
+            placeholder="password123"
+            iconName="lock"
+            autoCapitalize={'none'}
+            onBlur={validateEmail}
+            control={control}
+            errors={errors}
+          />
+        </View>
         <Gap height={20} />
-        <TouchableNativeFeedback onPress={submitLogin} useForeground>
-          <View style={styles.btnSubmit}>
-            <Text style={styles.textBtnSubmit}>Masuk</Text>
-          </View>
-        </TouchableNativeFeedback>
-        <Gap height={10} />
-        <TouchableNativeFeedback
-          onPress={() => navigation.navigate('Register')}
-          useForeground>
-          <View style={styles.btnRegister}>
-            <Text style={styles.textBtnSubmit}>Daftar</Text>
-          </View>
-        </TouchableNativeFeedback>
+
+        {/* button masuk */}
+        <View style={{alignItems: 'center'}}>
+          <ButtonSubmit title="Masuk" onPress={handlesubmit(handleLogin)} />
+          <Gap height={10} />
+        </View>
+
+        {/* button Register */}
+        <View style={{alignItems: 'center'}}>
+          <ButtonSubmit
+            title="Daftar"
+            onPress={() => navigation.navigate('Register')}
+          />
+        </View>
       </View>
     </View>
   );
@@ -81,11 +220,9 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   container: {
-    alignItems: 'center',
-    justifyContent: 'center',
     flex: 1,
     width: '100%',
     maxWidth: 480,
-    alignSelf: 'center',
+    justifyContent: 'center',
   },
 });
