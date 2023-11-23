@@ -6,15 +6,14 @@ import messaging from '@react-native-firebase/messaging';
 
 import {
   Home,
-  Korwil,
   LibDemo,
   Login,
   OnBoarding,
   Product,
   Register,
   SplashScreen,
-  Teknisi,
 } from '../screens';
+import {Text} from 'react-native';
 
 const Stack = createNativeStackNavigator();
 
@@ -35,7 +34,7 @@ export default function Navigator() {
         'Notification caused app to open from background state:',
         remoteMessage.notification,
       );
-      // navigation.navigate('Product');
+      // navigation.navigate('CCTVStock');
     });
 
     // handle notifikasi jika aplikasi keluar
@@ -71,8 +70,6 @@ export default function Navigator() {
       <Stack.Screen name="Home" component={Home} />
       <Stack.Screen name="LibDemo" component={LibDemo} />
       <Stack.Screen name="Product" component={Product} />
-      <Stack.Screen name="Korwil" component={Korwil} />
-      <Stack.Screen name="Teknisi" component={Teknisi} />
     </Stack.Navigator>
   );
 }

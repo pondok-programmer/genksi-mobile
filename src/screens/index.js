@@ -5,17 +5,5 @@ import SplashScreen from './SplashScreen/SplashScreen';
 import Home from './Home/Home';
 import LibDemo from './__test__/LibDemo.test';
 import Product from './Product/Product';
-import Korwil from './Korwil/Korwil';
-import Teknisi from './Teknisi/Teknisi';
 
-export {
-  Login,
-  Register,
-  SplashScreen,
-  OnBoarding,
-  Home,
-  LibDemo,
-  Product,
-  Korwil,
-  Teknisi,
-};
+export {Login, Register, SplashScreen, OnBoarding, Home, LibDemo, Product};

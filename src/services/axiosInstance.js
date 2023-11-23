@@ -3,7 +3,7 @@ import {useSelector} from 'react-redux';
 import EncryptedStorage from 'react-native-encrypted-storage';
 
 const api = axios.create({
-  baseURL: 'https://genksi.ejctechnology.com/api',
+  baseURL: 'https://todo-api-omega.vercel.app/api/v1',
   headers: {
     'Content-Type': 'application/json',
     Accept: 'application/json',

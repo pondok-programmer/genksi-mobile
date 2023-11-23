@@ -7,28 +7,19 @@ import {
 } from 'react-native';
 import React from 'react';
 import {ImgCCTV} from '../../assets';
-import EncryptedStorage from 'react-native-encrypted-storage';
 
 export default function OnBoarding({navigation}) {
-  async function onStart() {
-    try {
-      await EncryptedStorage.setItem('is_boarding', 'boarding');
-      navigation.replace('Login');
-    } catch (err) {
-      console.log('error', err);
-    }
-  }
-
   return (
     <View style={{flex: 1}}>
       <View style={styles.container}>
         <View style={styles.viewShape} />
         <Image source={ImgCCTV} style={styles.imgCctv} />
         <Text style={styles.textTitle}>
-          Selamat Datang Di Genksi, mempunyai kualitas dan kuantitas yang
-          terjangkau!
+          Genksi, mempunyai kualitas dan kuantitas yang terjangkau!
         </Text>
-        <TouchableNativeFeedback useForeground onPress={() => onStart()}>
+        <TouchableNativeFeedback
+          useForeground
+          onPress={() => navigation.replace('Login')}>
           <View style={styles.btnNext}>
             <Text style={styles.textBtnNext}>Mulai</Text>
           </View>
