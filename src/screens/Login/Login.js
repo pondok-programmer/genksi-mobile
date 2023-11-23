@@ -8,7 +8,7 @@ export default function Login({navigation}) {
   const [password, setPassword] = useState('');
 
   function submitLogin() {
-    console.log({email, password});
+    // console.log({email, password});
     navigation.replace('Home');
   }
 
