@@ -1,12 +1,15 @@
 import {
   StyleSheet,
-  Text,
   TextInput,
   View,
   TouchableNativeFeedback,
+  PermissionsAndroid,
+  Alert,
+  Text,
 } from 'react-native';
 import React, {useState} from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import {colors} from '../../../utils/constant';
 
 export default function FormInput({
   iconName = 'gmail',
@@ -14,8 +17,11 @@ export default function FormInput({
   autoCapitalize,
   placeholder = 'Placeholder',
   onChangeText,
+  type = 'text',
+  pickerItem,
 }) {
   const [secureText, setSecureText] = useState(true);
+
   return (
     <View style={styles.container}>
       <Icon name={iconName} color={'black'} size={25} />
@@ -57,5 +63,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     paddingHorizontal: 15,
     width: '80%',
+  },
+  containerPicker: {
+    flex: 1,
+    height: 50,
+    overflow: 'hidden',
+    paddingTop: -10,
   },
 });
