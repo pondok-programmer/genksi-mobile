@@ -6,22 +6,33 @@ import {
   Modal,
   Image,
   ScrollView,
+  ActivityIndicator,
+  ImageBackground,
+  TouchableNativeFeedback,
+  ToastAndroid,
 } from 'react-native';
 import React, {useState, useEffect} from 'react';
 import MapView, {PROVIDER_GOOGLE, Marker, Callout} from 'react-native-maps';
 import Geolocation from '@react-native-community/geolocation';
 import axios from 'axios';
-import {ImgprofilePicture} from '../../assets';
+import {IconMenu, ImgprofilePicture} from '../../assets';
 import {Gap} from '../../components';
 import {colors} from '../../utils/constant';
 import api from '../../services/axiosInstance';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import {useDispatch, useSelector} from 'react-redux';
 
-export default function Home() {
-  const [role, setRole] = useState('user');
+export default function Home({navigation}) {
+  const [modalVisible, setModalVisible] = useState(false);
+  const [daftarTeknisi, setDaftarTeknisi] = useState([]);
+  const [daftarProduct, setDaftarProduct] = useState([]);
+  const [productCctv, setProductCctv] = useState([]);
+  const [ready, setReady] = useState(false);
   const [coords, setCoords] = useState({
     latitude: -6.175724,
     longitude: 106.827129,
   });
+
   function requestAuthGeo() {
     Geolocation.requestAuthorization(
       () => {
@@ -42,37 +53,6 @@ export default function Home() {
     );
   }
 
-  const [daftarTeknisi, setDaftarTeknisi] = useState([
-    // {
-    //   id: 1,
-    //   name: 'NAMA USER',
-    //   latitude: -6.18033,
-    //   longitude: 106.813003,
-    //   device_token:
-    //     'd05UEbhsRQSvPCKqRj46Pv:APA91bFUe9nMkvtGLDiknVRHnd0MfnIm9nC1hjv8TmRCCHCXRG2eAdyeB2ly9KW8Lu7ZQdcTnLbXHNNnlnlU8PS6CWh0uUi4msma289Zgw8L8PbTZYUw-qrp1m6F93ADLnlN8gmNbwg0',
-    // },
-    // {
-    //   id: 2,
-    //   name: 'NAMA USER',
-    //   latitude: -6.173976,
-    //   longitude: 106.818664,
-    //   device_token:
-    //     'easdfasdfee1teuOlhOwefwefsdfGBMrDziwYXft_K9lP4STXFroJmmKjJcj7ek7ZunwPmeKbF-AGoLqz-qEGvr-bEUI_3m3x-pVkzrVGHVYG6nlZ-fEC4CDoCxsMwx1h19G2b0PI6IB7J8pXGwefwefwef',
-    // },
-    // {
-    //   id: 3,
-    //   name: 'NAMA USER',
-    //   latitude: -6.179804,
-    //   longitude: 106.818006,
-    //   device_token:
-    //     'fasdxcvvdsvfAPA91bGBMrDziwYXft_K9lP4STXFroJmmKjJcj7ek7ZunwPmeKbF-AGoLqz-qEGvr-bEUI_3m3x-pVkzrVGHVYG6nlZ-fEC4CDoCxsMwx1h19G2b0PI6IB7J8pXGLfsadfasdf',
-    // },
-  ]);
-  function getTeknisi() {
-    fetch();
-  }
-
-  const [modalVisible, setModalVisible] = useState(false);
   const [teknisiDetail, setTeknisiDetail] = useState({
     id: null,
     name: '',
@@ -86,21 +66,56 @@ export default function Home() {
     },
   });
 
+  // Data teknisi
   async function fetchData() {
     try {
-      const response = await api.get('/pembeli/teknisi');
-      console.log('response:', response);
-      if (response.data.message === 'Data teknisi berhasil diperoleh') {
-        const dataTeknisiAll = response.data;
-        setDaftarTeknisi(dataTeknisiAll);
+      const response = await api.get('/member/teknisi');
+      console.log('teknisi', response.data.message);
+      setDaftarTeknisi(response.data.data);
+    } catch (error) {
+      if (error.response) {
+        console.log('error from server teknisi', error.response.data);
+        if (error.response.data.message === 'Unauthenticated.') {
+          navigation.replace('Login');
+          ToastAndroid.show(
+            'login ulang untuk perbarui data anda',
+            ToastAndroid.LONG,
+          );
+        }
       } else {
-        console.log('failed to fetch technicans data');
+        console.log('error souce code', error.message);
       }
+    }
+  }
+
+  // ! FCM PRODUCT
+  async function beliCCTV(selectedProduct) {
+    try {
+      const response = axios.post('http://localhost:3000/send-fcm', {
+        device_token: teknisiDetail.device_token,
+        title: `User Anu Membeli CCTV ${selectedProduct.name}`,
+        body: 'Harap periksa ketersediaan produk',
+      });
+      console.log(response);
+    } catch (error) {
+      if (error.message) {
+        console.log('error from server', error.response.data);
+      } else {
+        console.log('error', error.message);
+      }
+    }
+  }
+
+  async function dataProductCctv(id) {
+    try {
+      const response = await api.get(`/member/produk-teknisi/${id}`);
+      console.log('product CCTV', response.data.message);
+      setDaftarProduct(response.data.data);
     } catch (error) {
       if (error.response) {
         console.log('error from server', error.response.data);
       } else {
-        console.log('error souce code', error.message);
+        console.log('Error fetching product details', error.message);
       }
     }
   }
@@ -109,29 +124,16 @@ export default function Home() {
     fetchData();
   }, []);
 
-  // const [productCCTV, setProductCCTV] = useState([
-  //   {
-  //     name: 'CCTV 2000 FULL HD',
-  //     description: 'CCTV berkualitas bagus! Dengan resolusi 4k',
-  //     price: 3000000,
-  //   },
-  //   {
-  //     name: 'CCTV 4000 FULL HD',
-  //     description: 'CCTV berkualitas bagus! Dengan resolusi 4k',
-  //     price: 5000000,
-  //   },
-  //   {
-  //     name: 'CCTV 5000 Crystal Clear',
-  //     description: 'CCTV berkualitas bagus! Dengan resolusi 4k',
-  //     price: 7000000,
-  //   },
-  // ]);
-  // function getCCTVProducts(id) {
-  //   fetch(`http://localhost:3000/product-cctv/${id}`);
-  // }
+  // ! DRAWER LAYOUTING
 
   return (
     <View style={{flex: 1}}>
+      {/* image menu */}
+      <TouchableNativeFeedback
+        useForeground
+        onPress={() => navigation.navigate('Menu')}>
+        <ImageBackground source={IconMenu} style={styles.bgMenu} />
+      </TouchableNativeFeedback>
       <MapView
         showsCompass
         showsMyLocationButton
@@ -153,17 +155,20 @@ export default function Home() {
             onPress={() => {
               setModalVisible(true);
               setTeknisiDetail(value);
-              // setDaftarTeknisi(value);
-              // getCCTVProducts(value.id);
-              // setSelectedMarker(v);
-              // dispatch(SetModal(true));
+              console.log('ID teknisi yang dipilih:', value.id);
+              console.log(value);
+              dataProductCctv(value.id);
+              setProductCctv(value);
+              setReady(false);
+              setTimeout(() => setReady(true), 2000);
             }}
             coordinate={{
-              latitude: value.latitude,
-              longitude: value.longitude,
+              latitude: parseFloat(value.latitude),
+              longitude: parseFloat(value.longitude),
             }}></Marker>
         ))}
       </MapView>
+
       <Button title="get current position" onPress={requestAuthGeo} />
 
       {/* MODAL */}
@@ -171,47 +176,110 @@ export default function Home() {
         visible={modalVisible}
         animationType="slide"
         onRequestClose={() => setModalVisible(false)}>
-        <ScrollView>
-          <View>
-            <Gap height={30} />
-            <View style={styles.viewImgProduct}>
-              <Image source={ImgprofilePicture} />
+        <View style={styles.ModalContainer}>
+          {!ready ? (
+            <View style={styles.loadingActivityIndicator}>
+              <ActivityIndicator size="large" color="black" />
+              <Gap height={70} />
+              <Text style={styles.textLoading}>Memuat formulir..</Text>
             </View>
-            <Text style={styles.textNameTeknisi}>{teknisiDetail.name}</Text>
-            <Gap height={20} />
-
-            {role === 'user' && (
-              <Text style={styles.textListProduct}>Daftar Product cctv:</Text>
-            )}
-            {role === 'teknisi' && (
-              <Text style={styles.textListProduct}>
-                Daftar dan stok product cctv:
-              </Text>
-            )}
-            {role == 'korwil' && (
-              <Text style={styles.textListProduct}>
-                Masuk ke Applikasi WhatsApp untuk memulai pembelian product ke
-                distributor
-              </Text>
-            )}
-          </View>
-        </ScrollView>
+          ) : (
+            <ScrollView>
+              <View>
+                <Gap height={20} />
+                <View style={styles.viewImgProduct}>
+                  <Image source={ImgprofilePicture} />
+                </View>
+                <Text style={styles.textNameTeknisi}>{teknisiDetail.name}</Text>
+                <Gap height={10} />
+                <Text style={styles.textListProduct}>Daftar Cctv:</Text>
+                {daftarProduct.map((value, index) => {
+                  return (
+                    <View key={index} style={styles.modalProduct}>
+                      <Text style={styles.textListProduct}>
+                        Nama cctv: {value.nama_produk}
+                      </Text>
+                      <Text style={styles.textListProduct}>
+                        merk: {value.merk}
+                      </Text>
+                      <Text style={styles.textListProduct}>
+                        tipe: {value.tipe}
+                      </Text>
+                      <Text style={styles.textListProduct}>
+                        resolusi: {value.resolusi}
+                      </Text>
+                      <Text style={styles.textListProduct}>
+                        harga: {value.harga}
+                      </Text>
+                      <Text style={styles.textListProduct}>
+                        stok product cctv: {value.jumlah_stok_produk_teknisi}
+                      </Text>
+                      <Gap height={10} />
+                      <View style={{marginHorizontal: 30}}>
+                        <Button
+                          title="Membeli Cctv"
+                          onPress={() => beliCCTV(value)}
+                          color={'green'}
+                        />
+                      </View>
+                    </View>
+                  );
+                })}
+              </View>
+            </ScrollView>
+          )}
+        </View>
       </Modal>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
+  bgMenu: {
+    width: 33,
+    height: 26,
+    marginLeft: 15,
+    marginTop: 30,
+    position: 'absolute',
+    zIndex: 1,
+    overflow: 'hidden',
+  },
+  loadingActivityIndicator: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  ModalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: colors.WHITE,
+  },
+  textLoading: {
+    position: 'absolute',
+    width: '100%',
+    height: '100%',
+    textAlign: 'center',
+    textAlignVertical: 'center',
+    color: 'grey',
+    flex: 1,
+    fontStyle: 'italic',
+  },
+  modalProduct: {
+    elevation: 5,
+    backgroundColor: colors.secondaryMain,
+    maxWidth: 400,
+    margin: 10,
+    borderRadius: 10,
+  },
   viewImgProduct: {
     alignItems: 'center',
     overflow: 'hidden',
   },
   textNameTeknisi: {
     color: 'black',
-    fontSize: 23,
+    fontSize: 19,
     fontFamily: 'Poppins-Medium',
     textAlign: 'center',
-    top: 10,
   },
   textListProduct: {
     color: 'black',

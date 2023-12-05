@@ -8,3 +8,8 @@ export const store = configureStore({
     demo: demoReducer,
   },
 });
+
+// ! Melihat data tersimpan di redux
+// store.subscribe(() => {
+//   console.log('all data', store.getState());
+// });

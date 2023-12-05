@@ -5,185 +5,165 @@ import {
   TouchableNativeFeedback,
   View,
 } from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import {Background, Gap} from '../../components';
 import {ButtonSubmit, FormInput} from '../../features/Auth';
 import api from '../../services/axiosInstance';
-import Geolocation from '@react-native-community/geolocation';
-import axios from 'axios';
-import {useFrom} from 'react-hook-form';
+import EncryptedStorage from 'react-native-encrypted-storage';
+import {useForm} from 'react-hook-form';
+import {useDispatch} from 'react-redux';
+import {setName} from '../../features/Auth/services/authSlice';
 
 export default function Login({navigation}) {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [latitude, setLatitude] = useState('');
-  const [longitude, setLongitude] = useState('');
-  const [emailError, setEmailError] = useState(false);
-  const [passwordError, setPasswordError] = useState(false);
-  // ini error usefrom1
+  const dispatch = useDispatch();
   const {
     control,
-    fromState: {errors},
-    handlesubmit,
-  } = useFrom();
+    formState: {errors},
+    handleSubmit,
+  } = useForm();
 
-  const validateEmail = () => {
-    setEmailError(!email);
-  };
+  // async function submitLogin(authLogin) {
+  //   const {email, password} = authLogin;
+  //   console.log('Login', {
+  //     ...authLogin,
+  //     latitude: '0.0235',
+  //     longitude: '-023233',
+  //   });
+  //   if (!email.includes('@gmail.com')) {
+  //     Alert.alert('Perhatian!', 'Email harus menggunakan @gmail.com');
+  //   } else if (password.length < 6) {
+  //     Alert.alert('Perhatian!', 'Kata sandi minimal 6 karakter');
+  //   } else {
+  //     try {
+  //       const response = await api.post('/login', {
+  //         ...authLogin,
+  //         latitude: '0.0235',
+  //         longitude: '-023233',
+  //       });
+  //       console.log('response', response.data);
+  //       await EncryptedStorage.setItem(
+  //         'token',
+  //         response.data.authorization.token,
+  //       );
+  //       if (response.data.message) {
+  //         // Jika respons menyertakan pesan peran
+  //         // Alert.alert('Peran', response.data.message);
 
-  const validatePassword = () => {
-    setPasswordError(!password);
-  };
-
-  async function handleLogin() {
-    var formdata = new FormData();
-    formdata.append('email', email);
-    formdata.append('password', password);
-    formdata.append('latitude', latitude);
-    formdata.append('longitude', longitude);
-
-    var requestOptions = {
-      method: 'POST',
-      body: formdata,
-      redirect: 'follow',
-    };
-
-    fetch('https://genksi.ejctechnology.com/api/login', requestOptions)
-      .then(response => response.text())
-      .then(result => {
-        console.log(result);
-      })
-      .catch(error => {
-        console.log('error', error.message);
-      });
-  }
-
-  // const submitLogin = async () => {
-  //   if (!email || !password) {
-  //     console.log('Email atau password kosong');
-  //     setEmailError(!email);
-  //     setPasswordError(!password);
-  //     ToastAndroid.show('email dan password harus diisi.', ToastAndroid.SHORT);
-  //     return;
-  //   }
-
-  //   try {
-  //     const response = await axios.post(
-  //       'https://genksi.ejctechnology.com/api/login',
-  //       JSON.stringify({
-  //         email,
-  //         password,
-  //         latitude,
-  //         longitude,
-  //       }),
-  //     );
-  //     console.log('response', response);
-
-  // if (response.data.authorization && response.data.user) {
-  //   // Jika autentikasi berhasil
-  //   navigation.navigate('Home');
-  //   ToastAndroid.show('Selamat datang', ToastAndroid.LONG);
-  // } else {
-  //   // Jika autentikasi gagal
-  //   ToastAndroid.show('Email atau password salah!', ToastAndroid.LONG);
-  // }
-  // } catch (error) {
-  //     if (error.response) {
-  //       // Handle error responses from the server
-  //       console.log('Error ', error.response.data);
-  //       ToastAndroid.show('Terjadi kesalahan dari server', ToastAndroid.LONG);
-  //     } else {
-  //       // Handle other types of errors
-  //       console.log('error cource code', error.message);
-  //       ToastAndroid.show('Terjadi kesalahan', ToastAndroid.LONG);
+  //         if (response.data.message.includes('teknisi')) {
+  //           // Navigasi ke layar Teknisi jika peran adalah Teknisi
+  //           navigation.navigate('TeknisiScreen');
+  //         } else if (response.data.message.includes('member')) {
+  //           // Navigasi ke layar Home jika peran adalah Member
+  //           navigation.navigate('Home');
+  //           ToastAndroid.show('Selamat datang', ToastAndroid.SHORT);
+  //         }
+  //       } else {
+  //         // Lakukan navigasi ke layar default jika tidak ada pesan peran
+  //         navigation.navigate('Home');
+  //         ToastAndroid.show('Selamat datang', ToastAndroid.SHORT);
+  //       }
+  //     } catch (error) {
+  //       if (error.response) {
+  //         // Handle error responses from the server
+  //         console.log('Error ', error.response.data);
+  //         ToastAndroid.show('Terjadi kesalahan dari server', ToastAndroid.LONG);
+  //       } else {
+  //         // Handle other types of errors
+  //         console.log('error cource code', error.message);
+  //         ToastAndroid.show('Terjadi kesalahan', ToastAndroid.LONG);
+  //       }
   //     }
   //   }
-  // };
+  // }
 
-  const emailErrorMessage = emailError ? 'email wajib diisi' : '';
-  const passwordErrorMessage = passwordError ? 'password wajib diisi' : '';
+  async function submitLogin(authLogin) {
+    const {email, password} = authLogin;
+    console.log('Login', {
+      ...authLogin,
+      latitude: '0.0235',
+      longitude: '-023233',
+    });
 
-  useEffect(() => {
-    getLocation();
-  }, []);
+    try {
+      const response = await api.post('/login', {
+        ...authLogin,
+        latitude: '0.0235',
+        longitude: '-023233',
+      });
+      console.log('response', response.data);
+      dispatch(setName(response.data.user.name));
+      // dispatch(setToken(response.data.authorization.token));
+      await EncryptedStorage.setItem(
+        'token',
+        response.data.authorization.token,
+      );
 
-  // Fungsi untuk mendapatkan data geolokasi
-  const getLocation = () => {
-    Geolocation.getCurrentPosition(
-      position => {
-        const {latitude, longitude} = position.coords;
-        setLatitude(latitude.toString());
-        setLongitude(longitude.toString());
-      },
-      error => {
-        console.log(error.message);
-        ToastAndroid.show('Gagal mengambil lokasi', ToastAndroid.LONG);
-      },
-    );
-  };
+      if (response.data.message.includes('teknisi')) {
+        await EncryptedStorage.setItem('userRole', 'teknisi');
+        navigation.navigate('Teknisi');
+        ToastAndroid.show('Selamat datang', ToastAndroid.SHORT);
+      } else if (response.data.message.includes('member')) {
+        await EncryptedStorage.setItem('userRole', 'member');
+        navigation.navigate('Home');
+        ToastAndroid.show('Selamat datang', ToastAndroid.SHORT);
+      } else {
+        navigation.navigate('Home');
+        ToastAndroid.show('Selamat datang', ToastAndroid.SHORT);
+      }
+    } catch (error) {
+      if (error.response) {
+        console.log('Error ', error.response.data);
+        ToastAndroid.show(
+          'Perhatian email dan password anda ',
+          ToastAndroid.LONG,
+        );
+      } else {
+        console.log('error cource code', error.message);
+        ToastAndroid.show('Perhatian internet anda', ToastAndroid.LONG);
+      }
+    }
+  }
 
   return (
     <View style={{flex: 1}}>
       <Background />
       <View style={styles.container}>
-        {/* text login */}
         <View style={{alignItems: 'center'}}>
           <Text style={styles.textTitle}>Login</Text>
         </View>
         <View style={{height: 21}} />
 
-        {/* textInput email dan text warning email */}
-        <Text style={{color: 'red', textAlign: 'left', marginLeft: 40}}>
-          {emailErrorMessage}
-        </Text>
-        <View style={{alignItems: 'center'}}>
-          <FormInput
-            onChangeText={text => {
-              setEmail(text);
-              setEmailError(false);
-            }}
-            placeholder="contoh@email.com"
-            autoCapitalize={'none'}
-            errors={errors}
-            control={control}
-          />
-        </View>
-        <View style={{height: 15}} />
+        <FormInput
+          name={'email'}
+          placeholder={'contoh@gmail.com'}
+          iconName={'gmail'}
+          keyboardType={'email-address'}
+          autoCapitalize={'none'}
+          errors={errors}
+          control={control}
+        />
 
-        {/* textInput password dan text warning password */}
-        <Text style={{color: 'red', textAlign: 'left', marginLeft: 40}}>
-          {passwordErrorMessage}
-        </Text>
-        <View style={{alignItems: 'center'}}>
-          <FormInput
-            onChangeText={text => {
-              setPassword(text);
-              setPasswordError(false);
-            }}
-            password
-            placeholder="password123"
-            iconName="lock"
-            autoCapitalize={'none'}
-            onBlur={validateEmail}
-            control={control}
-            errors={errors}
-          />
-        </View>
+        <FormInput
+          name={'password'}
+          placeholder={'Kata sandi..'}
+          iconName={'lock'}
+          secureTextEntry
+          errors={errors}
+          control={control}
+        />
         <Gap height={20} />
 
-        {/* button masuk */}
-        <View style={{alignItems: 'center'}}>
-          <ButtonSubmit title="Masuk" onPress={handlesubmit(handleLogin)} />
-          <Gap height={10} />
-        </View>
+        <TouchableNativeFeedback useForeground>
+          <ButtonSubmit title="Masuk" onPress={handleSubmit(submitLogin)} />
+        </TouchableNativeFeedback>
+        <Gap height={15} />
 
-        {/* button Register */}
-        <View style={{alignItems: 'center'}}>
+        <TouchableNativeFeedback useForeground>
           <ButtonSubmit
             title="Daftar"
             onPress={() => navigation.navigate('Register')}
           />
-        </View>
+        </TouchableNativeFeedback>
       </View>
     </View>
   );
@@ -224,6 +204,8 @@ const styles = StyleSheet.create({
     flex: 1,
     width: '100%',
     maxWidth: 480,
+    alignItems: 'center',
     justifyContent: 'center',
+    padding: 20,
   },
 });

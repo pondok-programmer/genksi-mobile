@@ -4,160 +4,107 @@ import {
   TouchableNativeFeedback,
   View,
   Alert,
-  PermissionsAndroid,
-  Image,
+  ScrollView,
+  KeyboardAvoidingView,
+  ToastAndroid,
 } from 'react-native';
 import React, {useState} from 'react';
 import {Background, Gap, Header} from '../../components';
-import {FormInput} from '../../features/Auth';
+import {ButtonSubmit, FormInput} from '../../features/Auth';
 import {Picker} from '@react-native-picker/picker';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import {colors} from '../../utils/constant';
+import {useForm} from 'react-hook-form';
+import api from '../../services/axiosInstance';
 
 export default function Register({navigation}) {
-  const [name, setName] = useState('');
+  const [nama, setNama] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [selectRoute, setSelectRoute] = useState('');
-  const [selectedImageCamera, setSelectedImageCamera] = React.useState(null);
+  const [ready, setReady] = useState(false);
+  setTimeout(() => setReady(true), 1000);
+  const {
+    control,
+    formState: {errors},
+    handleSubmit,
+    setValue,
+  } = useForm();
 
-  function submitRegister() {
-    console.log({email, password});
-    navigation.replace('Home');
-  }
-
-  // Image hanlde
-  async function hanldeImagePicker() {
-    //
-    function imagePicker(source) {
-      const options = {
-        title: 'Pilih Gambar',
-        cancelButtonTitle: 'Batal',
-        takePhotoButtonTitle: 'Ambil Gambar dari Kamera',
-        chooseFromLibraryButtonTitle: 'Pilih Gambar dari Galeri',
-        quality: 0.2,
-      };
-      if (source === 'camera') {
-        launchCamera(options, response => {
-          if (response.didCancel) {
-            console.log('Batal memilih gambar');
-          } else if (response.error) {
-            console.log('Error :', response.error);
-          } else {
-            const {fileName: name, uri, type} = response.assets[0];
-            setSelectedImageCamera({uri, name, type});
-          }
+  // fect register handle
+  async function submitRegister(authRegister) {
+    try {
+      if (!authRegister.email.includes('@gmail.com')) {
+        Alert.alert('Perhatian!', 'Email harus menggunakan @gmail.com');
+      } else if (authRegister.password.length < 6) {
+        Alert.alert('Perhatian!', 'Kata sandi minimal 6 karakter');
+      } else {
+        const response = await api.post('/register', {
+          name: authRegister.nama,
+          email: authRegister.email,
+          password: authRegister.password,
         });
-      } else if (source == 'gallery') {
-        launchImageLibrary(options, response => {
-          if (response.didCancel) {
-            console.log('Batal Mengambil gambar dari galery');
-          } else if (response.error) {
-            console.log('Error :', response.error);
-          } else {
-            const {fileName: name, uri, type} = response.assets[0];
-            setSelectedImageCamera({uri, name, type});
-          }
-        });
+        console.log('response', response.data.message);
+        console.log('User Details', response.data.user);
+        ToastAndroid.show('Berhasil mendaftarkan akun', ToastAndroid.SHORT);
+        navigation.goBack();
+      }
+    } catch (error) {
+      if (error.response) {
+        console.log('Error', error.response.data);
+      } else {
+        console.log('error course code', error.message);
       }
     }
-
-    // Camera permission
-    const permissionCamera = async () => {
-      const granted = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.CAMERA,
-      );
-      if (granted === PermissionsAndroid.RESULTS.GRANTED) imagePicker('camera');
-    };
-
-    Alert.alert(
-      '',
-      'Ambil gambar dari...',
-      [
-        {
-          text: 'Kamera',
-          onPress: () => permissionCamera(),
-        },
-        {
-          text: 'Galeri',
-          onPress: () => imagePicker('gallery'),
-        },
-      ],
-      {cancelable: true},
-    );
   }
-
   return (
     <View style={{flex: 1}}>
       <Background />
-      <Header title="Register" onPress={() => navigation.goBack()} />
-      <View style={styles.container}>
-        <Gap height={10} />
+      <KeyboardAvoidingView
+        style={{flex: 1}}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+        <ScrollView stickyHeaderHiddenOnScroll>
+          <Header title="Register" onPress={() => navigation.goBack()} />
+          {ready && (
+            <View style={styles.container}>
+              <Text style={styles.textContainer}>
+                Yuk, daftar untuk memulai berinteraksi!
+              </Text>
 
-        {/* IMAGE PICKER */}
-        <View
-          style={{
-            height: 200,
-            width: '90%',
-          }}>
-          <TouchableNativeFeedback
-            useForeground
-            onPress={() => hanldeImagePicker()}>
-            <View
-              style={{
-                backgroundColor: colors.WHITE,
-                elevation: 10,
-                height: 210,
-                borderRadius: 15,
-                overflow: 'hidden',
-              }}>
-              <Icon
-                name="camera-iris"
-                color={'grey'}
-                size={60}
-                style={styles.iconCamera}
+              <FormInput
+                name={'nama'}
+                placeholder={'nama'}
+                iconName={'account'}
+                keyboardType={'email-address'}
+                autoCapitalize={'none'}
+                errors={errors}
+                control={control}
+                setValue={setNama}
               />
-              <Text style={styles.textImagePicker}>Pilih Gambar</Text>
-              {selectedImageCamera?.uri && (
-                <Image
-                  source={{uri: selectedImageCamera?.uri}}
-                  style={{width: '100%', height: '100%'}}
-                />
-              )}
-            </View>
-          </TouchableNativeFeedback>
-        </View>
-        <Gap height={25} />
 
-        {/* NAMA */}
-        <FormInput
-          onChangeText={setName}
-          placeholder="Masukan nama"
-          autoCapitalize={'words'}
-          iconName="account"
-        />
-        <Gap height={15} />
+              {/* EMAIL */}
+              <FormInput
+                name={'email'}
+                placeholder={'contoh@gmail.com'}
+                iconName={'gmail'}
+                keyboardType={'email-address'}
+                autoCapitalize={'none'}
+                errors={errors}
+                control={control}
+                setValue={setEmail}
+              />
 
-        {/* EMAIL */}
-        <FormInput
-          onChangeText={setEmail}
-          placeholder="contoh@email.com"
-          autoCapitalize={'none'}
-        />
-        <Gap height={15} />
+              {/* PASSWORD */}
+              <FormInput
+                name={'password'}
+                placeholder={'Kata sandi..'}
+                iconName={'lock'}
+                secureTextEntry
+                errors={errors}
+                control={control}
+                setValue={setPassword}
+              />
 
-        {/* PASSWORD */}
-        <FormInput
-          onChangeText={setPassword}
-          password
-          iconName="lock"
-          autoCapitalize={'none'}
-        />
-        <Gap height={15} />
-
-        {/*  DROPDOWN ROUTE */}
-        <View style={styles.viewPicker}>
+              {/*  DROPDOWN ROUTE */}
+              {/* <View style={styles.viewPicker}>
           <Icon name={'routes'} color={'black'} size={25} />
           <Picker
             style={styles.ContentPicker}
@@ -174,21 +121,49 @@ export default function Register({navigation}) {
             <Picker.Item label="Teknisi" value="Teknisi" />
             <Picker.Item label="Korwil" value="Korwil" />
           </Picker>
-        </View>
-        <Gap height={20} />
+        </View> */}
 
-        {/* BUTTON SUBMIT */}
-        <TouchableNativeFeedback onPress={submitRegister} useForeground>
-          <View style={styles.btnSubmit}>
-            <Text style={styles.textBtnSubmit}>Daftar</Text>
-          </View>
-        </TouchableNativeFeedback>
-      </View>
+              {/* BUTTON SUBMIT */}
+              <View style={{alignItems: 'center'}}>
+                <TouchableNativeFeedback useForeground>
+                  <ButtonSubmit
+                    title="Sign In"
+                    onPress={handleSubmit(submitRegister)}
+                  />
+                </TouchableNativeFeedback>
+              </View>
+
+              <View style={{alignItems: 'center', flexDirection: 'row'}}>
+                <Text>Sudah punya akun? </Text>
+                <Text>Login </Text>
+              </View>
+            </View>
+          )}
+        </ScrollView>
+        {!ready && <Text style={styles.textLoading}>Memuat formulir...</Text>}
+      </KeyboardAvoidingView>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
+  textContainer: {
+    color: 'black',
+    fontSize: 19,
+    fontFamily: 'Poppins-Medium',
+    marginBottom: 20,
+    fontWeight: '700',
+  },
+  textLoading: {
+    position: 'absolute',
+    width: '100%',
+    height: '100%',
+    textAlign: 'center',
+    textAlignVertical: 'center',
+    color: 'grey',
+    flex: 1,
+    fontStyle: 'italic',
+  },
   textImagePicker: {
     position: 'absolute',
     width: '100%',
@@ -254,10 +229,11 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   container: {
-    alignItems: 'center',
-    justifyContent: 'center',
+    flex: 1,
+    marginTop: 80,
+    alignContent: 'center',
     width: '100%',
     maxWidth: 480,
-    alignSelf: 'center',
+    padding: 20,
   },
 });

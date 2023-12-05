@@ -7,15 +7,16 @@ import {
   Image,
   ScrollView,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import MapView, {PROVIDER_GOOGLE, Marker, Callout} from 'react-native-maps';
 import Geolocation from '@react-native-community/geolocation';
 import axios from 'axios';
 import {Gap} from '../../../components';
 import {ImgprofilePicture} from '../../../assets';
 import {colors} from '../../../utils/constant';
+import api from '../../../services/axiosInstance';
 
-export default function HeadersAll() {
+export default function Map() {
   const [coords, setCoords] = useState({
     latitude: -6.175724,
     longitude: 106.827129,
@@ -23,7 +24,7 @@ export default function HeadersAll() {
   function requestAuthGeo() {
     Geolocation.requestAuthorization(
       () => {
-        console.log('success');
+        console.log('success to teknisi');
         Geolocation.getCurrentPosition(
           ({coords}) => {
             setCoords(coords);

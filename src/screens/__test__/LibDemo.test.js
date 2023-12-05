@@ -81,15 +81,11 @@
 // ! CONTOH MENGUNAKAN REDUX
 import {View, Text} from 'react-native';
 import React from 'react';
-import {useSelector} from 'react-redux';
 
 export default function LibDemo() {
-  const demo = useSelector(state => state.demo);
-  console.log(demo);
-
   return (
     <View>
-      <Text>LibDemo</Text>
+      <Text>LibDemo.test</Text>
     </View>
   );
 }

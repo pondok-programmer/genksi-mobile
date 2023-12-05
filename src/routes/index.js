@@ -15,6 +15,16 @@ import {
   SplashScreen,
   Teknisi,
 } from '../screens';
+import {
+  Dasboard,
+  Map,
+  OrderCctv,
+  ProductTeknisi,
+  Profile,
+  Transaksi,
+  UpdateProfile,
+} from '../features/Teknisi';
+import {Menu, ProfileMember, TransaksiMember} from '../features/Home';
 
 const Stack = createNativeStackNavigator();
 
@@ -73,6 +83,16 @@ export default function Navigator() {
       <Stack.Screen name="Product" component={Product} />
       <Stack.Screen name="Korwil" component={Korwil} />
       <Stack.Screen name="Teknisi" component={Teknisi} />
+      <Stack.Screen name="ProductTeknisi" component={ProductTeknisi} />
+      <Stack.Screen name="Dasboard" component={Dasboard} />
+      <Stack.Screen name="MapTeknisi" component={Map} />
+      <Stack.Screen name="ProfileTeknisi" component={Profile} />
+      <Stack.Screen name="UpdateProfile" component={UpdateProfile} />
+      <Stack.Screen name="Menu" component={Menu} />
+      <Stack.Screen name="TransaksiTeknisi" component={Transaksi} />
+      <Stack.Screen name="OrderCctvTeknisi" component={OrderCctv} />
+      <Stack.Screen name="ProfileMember" component={ProfileMember} />
+      <Stack.Screen name="TransaksiMember" component={TransaksiMember} />
     </Stack.Navigator>
   );
 }

@@ -4,21 +4,47 @@ import {ImgApplogo} from '../../assets';
 import {Gap} from '../../components';
 import {colors} from '../../utils/constant';
 import EncryptedStorage from 'react-native-encrypted-storage';
+import {useSelector, useDispatch} from 'react-redux';
+import {setToken} from '../../features/Auth/services/authSlice';
 
 export default function SplashScreen({navigation}) {
+  // const {token} = useSelector(state => state.auth);
+
   async function handleSplash() {
+    // try {
+    //   const credential = await EncryptedStorage.getItem('user_credential');
+    //   const onBoarding = await EncryptedStorage.getItem('is_boarding');
+    //   if (!credential && !onBoarding) {
+    //     navigation.replace('OnBoarding');
+    //   } else if (credential) {
+    //     navigation.replace('Home');
+    //   } else {
+    //     navigation.replace('Login');
+    //   }
+    // } catch (error) {
+    //   console.log('Error', error);
+    // }
     try {
-      const credential = await EncryptedStorage.getItem('user_credential');
-      const onBoarding = await EncryptedStorage.getItem('is_boarding');
-      if (!credential && !onBoarding) {
-        navigation.replace('OnBoarding');
-      } else if (credential) {
-        navigation.replace('Home');
+      const token = await EncryptedStorage.getItem('token');
+      const userRole = await EncryptedStorage.getItem('userRole');
+
+      if (token) {
+        // Jika token ada, arahkan sesuai peran pengguna
+        if (userRole === 'teknisi') {
+          navigation.replace('Teknisi');
+        } else {
+          navigation.replace('Home');
+        }
       } else {
-        navigation.replace('Login');
+        const onBoarding = await EncryptedStorage.getItem('is_boarding');
+        if (!onBoarding) {
+          navigation.replace('OnBoarding');
+        } else {
+          navigation.replace('Login');
+        }
       }
     } catch (error) {
-      console.log('Error', error);
+      console.error('Error:', error);
     }
   }
 

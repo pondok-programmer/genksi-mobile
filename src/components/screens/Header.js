@@ -11,7 +11,7 @@ import {colors} from '../../utils/constant';
 
 export default function Header({
   title = 'Title',
-  iconName = 'arrow-left-circle-outline',
+  iconName = 'arrow-left',
   onPress,
 }) {
   return (
@@ -49,6 +49,5 @@ const styles = StyleSheet.create({
     width: '100%',
     zIndex: 9,
     marginTop: statBarHeight,
-    // marginBottom: -100,
   }),
 });
