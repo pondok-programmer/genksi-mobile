@@ -45,13 +45,6 @@ export default function DistributorHome({navigation}) {
     } catch (error) {
       if (error.response) {
         console.log('error from server', error.response.data);
-        if (error.response.data.message === 'Unauthenticated.') {
-          navigation.replace('Login');
-          ToastAndroid.show(
-            'Login kembali untuk update data anda',
-            ToastAndroid.LONG,
-          );
-        }
       } else {
         console.log('error', error.message);
       }
