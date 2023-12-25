@@ -8,6 +8,7 @@ import Product from './Product/Product';
 import Korwil from './Korwil/Korwil';
 import Teknisi from './Teknisi/Teknisi';
 import Distributor from './Distributor/Distributor';
+import MapKorwil from './Distributor/map/MapKorwil';
 
 export {
   Login,
@@ -20,4 +21,5 @@ export {
   Korwil,
   Teknisi,
   Distributor,
+  MapKorwil,
 };

@@ -80,21 +80,21 @@ export default function Login({navigation}) {
 
   async function submitLogin(authLogin) {
     const {email, password} = authLogin;
-    console.log('Login', {
-      ...authLogin,
-      latitude: '0.0235',
-      longitude: '-023233',
-    });
+    const formData = {...authLogin, latitude: '0.0235', longitude: '-023233'};
+    console.log('Login', formData);
 
     try {
       setIsLoading(true);
       dispatch(setLoading('pending'));
-      const response = await api.post('/login', {
-        ...authLogin,
-        latitude: '0.0235',
-        longitude: '-023233',
-      });
-      console.log('response', response.data);
+
+      const response = await api.post('/login', formData);
+
+      await EncryptedStorage.setItem(
+        'user_credential',
+        JSON.stringify(formData),
+      );
+
+      // console.log('response', response.data);
       dispatch(setName(response.data.user.name));
       await EncryptedStorage.setItem(
         'token',
@@ -117,10 +117,10 @@ export default function Login({navigation}) {
         navigation.replace('Login');
       }
 
-      setIsLoading(true);
+      setIsLoading(false);
       dispatch(setLoading('pending'));
     } catch (error) {
-      setIsLoading(true);
+      setIsLoading(false);
       dispatch(setLoading('pending'));
 
       if (error.response) {
@@ -165,7 +165,7 @@ export default function Login({navigation}) {
         <TouchableNativeFeedback useForeground>
           <ButtonSubmit
             title="Masuk"
-            disabled={loading === 'pending'}
+            disabled={isLoading}
             loading={isLoading}
             onPress={handleSubmit(submitLogin)}
           />

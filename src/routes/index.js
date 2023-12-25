@@ -15,6 +15,7 @@ import {
   Register,
   SplashScreen,
   Teknisi,
+  MapKorwil,
 } from '../screens';
 import {
   Dasboard,
@@ -30,7 +31,6 @@ import {
   DataProduct,
   DistributorHome,
   KategoriProduct,
-  MapKorwil,
   MapMember,
   MapTeknisi,
   ProfileDistributor,
@@ -83,7 +83,7 @@ export default function Navigator() {
         statusBarColor: 'transparent',
         statusBarTranslucent: true,
       }}
-      initialRouteName={initialRouteName}>
+      initialRouteName={'LibDemo'}>
       <Stack.Screen name="SplashScreen" component={SplashScreen} />
       <Stack.Screen name="OnBoarding" component={OnBoarding} />
       <Stack.Screen name="Login" component={Login} />

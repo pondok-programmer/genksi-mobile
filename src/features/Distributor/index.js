@@ -1,7 +1,6 @@
 import DistributorHome from './components/DistributorHome';
 import KategoriProduct from './components/KategoriProduct';
 import DataProduct from './components/DataProduct';
-import MapKorwil from './components/MapKorwil';
 import MapTeknisi from './components/MapTeknisi';
 import ProfileDistributor from './components/ProfileDistributor';
 import MapMember from './components/MapMember';
@@ -14,7 +13,6 @@ export {
   MapMember,
   ProfileDistributor,
   MapTeknisi,
-  MapKorwil,
   DataProduct,
   DistributorHome,
   KategoriProduct,
