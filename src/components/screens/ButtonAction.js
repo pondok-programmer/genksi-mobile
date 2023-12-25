@@ -8,12 +8,13 @@ import {
 import React from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Gap from './Gap';
+import {colors} from '../../utils/constant';
 
 export default function ButtonAction({
   title = 'Button',
   onPress,
   disabled,
-  backgroundColor = '#183240',
+  backgroundColor = colors.BLUE,
   loading = false,
   iconLeft,
   iconRight,

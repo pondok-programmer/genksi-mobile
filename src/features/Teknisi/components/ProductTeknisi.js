@@ -2,30 +2,52 @@ import {
   StyleSheet,
   Text,
   View,
-  Linking,
   ScrollView,
   Image,
-  ToastAndroid,
+  TouchableOpacity,
 } from 'react-native';
 import React, {useState, useEffect} from 'react';
 import axios from 'axios';
-import {Background, Gap, Header} from '../../../components';
-import {ImgprofilePicture} from '../../../assets';
+import {EmptyBackground, Gap, Header} from '../../../components';
+import {ImgCCTV} from '../../../assets';
 import api from '../../../services/axiosInstance';
+import {useNavigation} from '@react-navigation/native';
 
-export default function ProductTeknisi({navigation}) {
-  const [dataProdukKorwil, setDataProdukKorwil] = useState(null);
+export default function ProductTeknisi({navigation, prop}) {
+  // const navigation = useNavigation();
   const [ready, setReady] = useState(true);
+  const [profileTeknisi, setProfileTeknisi] = useState([]);
+  const [wilayahTeknsi, setWilayahTeknsi] = useState([]);
+  const [selectedProduct, setSelectedProduct] = useState(null);
 
-  // const [loading, setLoading] = useState(true);
-
-  async function bukaWhatsApp(NoWhatsApp) {
-    try {
-      await Linking.openURL(`https://wa.me/${NoWhatsApp}`);
-    } catch (error) {
-      console.log(error);
-    }
-  }
+  const [dataProdukKorwil, setDataProdukKorwil] = useState([
+    {
+      'Koordinator Teknisi': '',
+      Wilayah: '',
+      'Produk Koordinator Teknisi': [
+        {
+          id: null,
+          kategori: '',
+          nama_produk: '',
+          merk: '',
+          tipe: '',
+          resolusi: '',
+          harga: null,
+          stok_produk_user: null,
+        },
+        {
+          id: null,
+          kategori: '',
+          nama_produk: '',
+          merk: '',
+          tipe: '',
+          resolusi: '',
+          harga: null,
+          stok_produk_user: null,
+        },
+      ],
+    },
+  ]);
 
   async function konfirmasiPembelian(namaPembeli, productId) {
     try {
@@ -50,8 +72,13 @@ export default function ProductTeknisi({navigation}) {
   async function fetchData() {
     try {
       const response = await api.get('/teknisi/produk');
-      setDataProdukKorwil(response.data);
-      // console.log('data', response.data);
+      setDataProdukKorwil(response.data['Produk Koordinator Teknisi']);
+      setProfileTeknisi(response.data['Koordinator Teknisi']);
+      setWilayahTeknsi(response.data['Wilayah']);
+      // console.log(
+      //   'data product teknisi',
+      //   response.data['Produk Koordinator Teknisi'],
+      // );
     } catch (error) {
       if (error.response) {
         console.log('error from server', error.response.data);
@@ -67,14 +94,10 @@ export default function ProductTeknisi({navigation}) {
     fetchData();
   }, []);
 
-  useEffect(() => {
-    fetchData();
-  }, []);
-
   return (
     <View style={{flex: 1}}>
+      <EmptyBackground />
       <Header title="Produk" onPress={() => navigation.goBack()} />
-      <Background />
       {ready ? (
         <View style={styles.ViewLoading}>
           <Text style={[styles.textLoading, {fontSize: 16}]}>
@@ -82,36 +105,47 @@ export default function ProductTeknisi({navigation}) {
           </Text>
         </View>
       ) : (
-        <ScrollView stickyHeaderHiddenOnScroll={true} stickyHeaderIndices={[0]}>
+        <ScrollView stickyHeaderHiddenOnScroll stickyHeaderIndices={[0]}>
           {dataProdukKorwil?.map((user, index) => (
-            <View key={index} style={styles.viewContent}>
+            <TouchableOpacity
+              style={styles.viewContent}
+              key={index}
+              onPress={() => {
+                setSelectedProduct(user);
+                navigation.navigate('OrderCctvTeknisi', {
+                  selectedProduct: user,
+                }); // Pass the selected product
+              }}>
               <View style={styles.viewContextProductCctv}>
-                <Image source={ImgprofilePicture} style={styles.productImage} />
+                <Image source={ImgCCTV} style={styles.productImage} />
                 <View style={styles.textProduct}>
                   <Text style={styles.ProductName}>
-                    Nama: {user.nama_produk}
+                    Nama korwil: {profileTeknisi}
+                  </Text>
+                  <Text style={styles.ProductKorwil}>
+                    Nama product: {user.nama_produk}
+                  </Text>
+                  <Text style={styles.ProductKorwil}>
+                    Wilayah korwil: {wilayahTeknsi}
                   </Text>
                   <Text style={styles.ProductKatogori}>
                     Description: {user.kategori}
                   </Text>
-                  <Text style={{color: 'black', fontFamily: 'Poppins-Medium'}}>
-                    Merk: {user.merk}
-                  </Text>
-                  <Text style={{color: 'black', fontFamily: 'Poppins-Regular'}}>
-                    Tipe: {user.tipe}
-                  </Text>
-                  <Text style={{color: 'black', fontFamily: 'Poppins-Regular'}}>
-                    {user.resolusi}
+                  <Text style={styles.ProductKorwil}>Merk: {user.merk}</Text>
+                  <Text style={styles.ProductKorwil}>Tipe: {user.tipe}</Text>
+                  <Text style={styles.ProductKorwil}>
+                    Resolusi: {user.resolusi}
                   </Text>
                   <Text style={styles.ProductAmount}>
                     Amount: Rp{user.harga},-
                   </Text>
-                  <Text style={{color: 'black', fontFamily: 'Poppins-Regular'}}>
-                    Stok cctv: {user.jumlah_stok_produk_teknisi}
+                  <Text style={styles.ProductKorwil}>
+                    Stok cctv: {user.stok_produk_user}
                   </Text>
+                  <Gap height={10} />
                 </View>
               </View>
-            </View>
+            </TouchableOpacity>
           ))}
         </ScrollView>
       )}
@@ -120,17 +154,28 @@ export default function ProductTeknisi({navigation}) {
 }
 
 const styles = StyleSheet.create({
-  productImage: {height: 100, borderRadius: 10},
+  ProductKorwil: {
+    fontSize: 14,
+    fontWeight: '400',
+    color: '#555',
+  },
+  txtHeadingProfileTeknisi: {
+    padding: 10,
+  },
+  productImage: {
+    height: 100,
+    width: 100,
+  },
   ProductKatogori: {
     fontSize: 14,
     color: '#555',
     fontFamily: 'Poppins-Regular',
   },
   ProductName: {
-    fontSize: 18,
+    fontSize: 17,
     fontWeight: 'bold',
-    marginBottom: 5,
     color: '#333',
+    marginBottom: 5,
   },
   ProductAmount: {
     fontSize: 16,
@@ -144,7 +189,7 @@ const styles = StyleSheet.create({
     height: '100%',
     textAlign: 'center',
     textAlignVertical: 'center',
-    color: 'grey',
+    color: 'black',
     flex: 1,
     fontStyle: 'italic',
   },
@@ -161,11 +206,10 @@ const styles = StyleSheet.create({
     top: 15,
   },
   viewContent: {
-    margin: 20,
+    margin: 10,
     backgroundColor: 'white',
     elevation: 7,
     borderRadius: 15,
-    alignItems: 'center',
     maxWidth: 340,
   },
   viewProfileUser: {
@@ -179,10 +223,10 @@ const styles = StyleSheet.create({
   },
   viewContextProductCctv: {
     flexDirection: 'row',
+    justifyContent: 'space-around',
     alignItems: 'center',
   },
   textProduct: {
     maxWidth: 210,
-    padding: 11,
   },
 });

@@ -8,32 +8,20 @@ import {
   Image,
   TouchableOpacity,
   Alert,
-  ToastAndroid,
   Button,
 } from 'react-native';
 
 import {useNavigation} from '@react-navigation/native';
-import EncryptedStorage from 'react-native-encrypted-storage';
 import {useSelector} from 'react-redux';
 import {Gap} from '../../../components';
-import {
-  IconChecklist,
-  IconProduct,
-  IconProfile,
-  IconShopping,
-  ImgCCTV,
-} from '../../../assets';
+import {IconChecklist, IconProfile, ImgCCTV} from '../../../assets';
 import {colors} from '../../../utils/constant';
-import {FormInput} from '../../Auth';
 
 const width = Dimensions.get('window').width;
 const height = Dimensions.get('window').height;
 
 export default function Menu() {
-  const {name} = useSelector(state => state.auth);
-  const {token} = useSelector(state => state.auth);
   const navigation = useNavigation();
-  const [userData, setUserData] = useState(null);
 
   // handle role
   const handleRole = () => {
@@ -110,13 +98,13 @@ const styles = StyleSheet.create({
     color: '#fff',
   },
   MenuBoxRole: {
-    backgroundColor: colors.secondaryMain,
+    backgroundColor: colors.BLUE,
     elevation: 15,
     height: '10%',
     borderRadius: 10,
-    padding: 10,
-    margin: 10,
+    margin: 15,
     flexDirection: 'row',
+    alignItems: 'center',
   },
   txtRole: {
     fontSize: 18,
@@ -210,14 +198,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   boxTpq: {
-    backgroundColor: colors.secondaryMain,
+    backgroundColor: colors.BLUE,
     width: '26%',
     height: '107%',
     alignItems: 'center',
     justifyContent: 'space-around',
     borderRadius: 15,
     elevation: 13,
-    borderWidth: 0.7,
+    borderWidth: 0.3,
   },
   txtDasboard: {
     color: colors.WHITE,

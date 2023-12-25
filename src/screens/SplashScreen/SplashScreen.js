@@ -29,11 +29,14 @@ export default function SplashScreen({navigation}) {
       const userRole = await EncryptedStorage.getItem('userRole');
 
       if (token) {
-        // Jika token ada, arahkan sesuai peran pengguna
         if (userRole === 'teknisi') {
           navigation.replace('Teknisi');
-        } else {
+        } else if (userRole === 'distributor') {
+          navigation.replace('DistributorHome');
+        } else if (userRole === 'member') {
           navigation.replace('Home');
+        } else {
+          navigation.replace('Login');
         }
       } else {
         const onBoarding = await EncryptedStorage.getItem('is_boarding');

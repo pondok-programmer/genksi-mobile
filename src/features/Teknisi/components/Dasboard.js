@@ -9,12 +9,12 @@ import {
   TouchableOpacity,
   Alert,
   Button,
+  ToastAndroid,
 } from 'react-native';
 import {Gap} from '../../../components';
 import {
   IconProduct,
   IconProfile,
-  IconShopping,
   IconChecklist,
   ImgCCTV,
 } from '../../../assets';
@@ -22,15 +22,16 @@ import {colors} from '../../../utils/constant';
 import {useNavigation} from '@react-navigation/native';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import {useSelector} from 'react-redux';
+import api from '../../../services/axiosInstance';
 
 const width = Dimensions.get('window').width;
 const height = Dimensions.get('window').height;
 
 export default function Dasboard() {
   const {name} = useSelector(state => state.auth);
-  console.log(name);
   const navigation = useNavigation();
   const [dataToken, setDataToken] = useState(null);
+  const [dataProfile, setDataProfile] = useState([]);
 
   // handle role
   const handleRole = () => {
@@ -55,20 +56,28 @@ export default function Dasboard() {
     );
   };
 
-  // permission token teknisi
-  const checkToken = async () => {
+  async function handleProfile() {
     try {
-      const storedToken = await EncryptedStorage.getItem('token');
-      if (!storedToken) {
-        setDataToken(storedToken);
-      }
+      const response = await api.get('/profile');
+      setDataProfile(response.data.data[0]);
     } catch (error) {
-      console.log(error);
+      if (error.response) {
+        console.log('error from server', error.response.data);
+        if (error.response.data.message === 'Unauthenticated.') {
+          navigation.replace('Login');
+          ToastAndroid.show(
+            'Login kembali untuk update data anda',
+            ToastAndroid.LONG,
+          );
+        }
+      } else {
+        console.log('Error', error.message);
+      }
     }
-  };
+  }
 
   useEffect(() => {
-    checkToken();
+    handleProfile();
   }, []);
 
   return (
@@ -76,7 +85,7 @@ export default function Dasboard() {
       <View style={[styles.body, {backgroundColor: colors.BLUE}]}>
         <Gap height={40} />
         <View style={styles.bodyimgAndTxtUser}>
-          <Text style={styles.txtAdmin}>Hii, {name}</Text>
+          <Text style={styles.txtAdmin}>Hii, {dataProfile.nama_lengkap}</Text>
         </View>
         <Gap height={20} />
 
@@ -108,15 +117,6 @@ export default function Dasboard() {
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.boxTpq}
-              onPress={() => navigation.navigate('OrderCctvTeknisi')}>
-              <Image source={IconShopping} style={{width: 40, height: 40}} />
-              <Text style={styles.txtDasboard}>Beli cctv</Text>
-            </TouchableOpacity>
-          </View>
-
-          <View style={styles.viewContent2}>
-            <TouchableOpacity
-              style={styles.boxTpq}
               onPress={() => navigation.navigate('TransaksiTeknisi')}>
               <Image source={IconChecklist} style={{width: 40, height: 40}} />
               <Text style={styles.txtDasboard}>Transaksi</Text>
@@ -142,13 +142,13 @@ const styles = StyleSheet.create({
     color: '#fff',
   },
   MenuBoxRole: {
-    backgroundColor: colors.secondaryMain,
+    backgroundColor: colors.BLUE,
     elevation: 15,
     height: '10%',
     borderRadius: 10,
-    padding: 10,
-    margin: 10,
+    margin: 15,
     flexDirection: 'row',
+    alignItems: 'center',
   },
   txtRole: {
     fontSize: 18,
@@ -249,14 +249,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   boxTpq: {
-    backgroundColor: colors.secondaryMain,
+    backgroundColor: colors.BLUE,
     width: '26%',
     height: '107%',
     alignItems: 'center',
     justifyContent: 'space-around',
     borderRadius: 15,
     elevation: 13,
-    borderWidth: 0.7,
+    borderWidth: 0.3,
   },
   txtDasboard: {
     color: colors.WHITE,

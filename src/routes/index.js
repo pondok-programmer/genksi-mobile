@@ -5,6 +5,7 @@ import RNBootSplash from 'react-native-bootsplash';
 import messaging from '@react-native-firebase/messaging';
 
 import {
+  Distributor,
   Home,
   Korwil,
   LibDemo,
@@ -25,6 +26,15 @@ import {
   UpdateProfile,
 } from '../features/Teknisi';
 import {Menu, ProfileMember, TransaksiMember} from '../features/Home';
+import {
+  DataProduct,
+  DistributorHome,
+  KategoriProduct,
+  MapKorwil,
+  MapMember,
+  MapTeknisi,
+  ProfileDistributor,
+} from '../features/Distributor';
 
 const Stack = createNativeStackNavigator();
 
@@ -93,6 +103,14 @@ export default function Navigator() {
       <Stack.Screen name="OrderCctvTeknisi" component={OrderCctv} />
       <Stack.Screen name="ProfileMember" component={ProfileMember} />
       <Stack.Screen name="TransaksiMember" component={TransaksiMember} />
+      <Stack.Screen name="Distributor" component={Distributor} />
+      <Stack.Screen name="DistributorHome" component={DistributorHome} />
+      <Stack.Screen name="Kategori" component={KategoriProduct} />
+      <Stack.Screen name="DataProduct" component={DataProduct} />
+      <Stack.Screen name="MapKorwil" component={MapKorwil} />
+      <Stack.Screen name="MapTeknisiDistributor" component={MapTeknisi} />
+      <Stack.Screen name="ProfileDistributor" component={ProfileDistributor} />
+      <Stack.Screen name="MapMemberDistributor" component={MapMember} />
     </Stack.Navigator>
   );
 }

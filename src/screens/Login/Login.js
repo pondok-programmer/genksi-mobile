@@ -5,17 +5,19 @@ import {
   TouchableNativeFeedback,
   View,
 } from 'react-native';
-import React from 'react';
-import {Background, Gap} from '../../components';
+import React, {useState} from 'react';
+import {Background, ButtonAction, Gap} from '../../components';
 import {ButtonSubmit, FormInput} from '../../features/Auth';
 import api from '../../services/axiosInstance';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import {useForm} from 'react-hook-form';
-import {useDispatch} from 'react-redux';
-import {setName} from '../../features/Auth/services/authSlice';
+import {useDispatch, useSelector} from 'react-redux';
+import {setName, setLoading} from '../../features/Auth/services/authSlice';
 
 export default function Login({navigation}) {
   const dispatch = useDispatch();
+  const {loading} = useSelector(state => state.auth);
+  const [isLoading, setIsLoading] = useState(false);
   const {
     control,
     formState: {errors},
@@ -85,6 +87,8 @@ export default function Login({navigation}) {
     });
 
     try {
+      setIsLoading(true);
+      dispatch(setLoading('pending'));
       const response = await api.post('/login', {
         ...authLogin,
         latitude: '0.0235',
@@ -92,7 +96,6 @@ export default function Login({navigation}) {
       });
       console.log('response', response.data);
       dispatch(setName(response.data.user.name));
-      // dispatch(setToken(response.data.authorization.token));
       await EncryptedStorage.setItem(
         'token',
         response.data.authorization.token,
@@ -100,26 +103,32 @@ export default function Login({navigation}) {
 
       if (response.data.message.includes('teknisi')) {
         await EncryptedStorage.setItem('userRole', 'teknisi');
-        navigation.navigate('Teknisi');
+        navigation.replace('Teknisi');
         ToastAndroid.show('Selamat datang', ToastAndroid.SHORT);
       } else if (response.data.message.includes('member')) {
         await EncryptedStorage.setItem('userRole', 'member');
-        navigation.navigate('Home');
+        navigation.replace('Home');
+        ToastAndroid.show('Selamat datang', ToastAndroid.SHORT);
+      } else if (response.data.message.includes('distributor')) {
+        await EncryptedStorage.setItem('userRole', 'distributor');
+        navigation.replace('DistributorHome');
         ToastAndroid.show('Selamat datang', ToastAndroid.SHORT);
       } else {
-        navigation.navigate('Home');
-        ToastAndroid.show('Selamat datang', ToastAndroid.SHORT);
+        navigation.replace('Login');
       }
+
+      setIsLoading(true);
+      dispatch(setLoading('pending'));
     } catch (error) {
+      setIsLoading(true);
+      dispatch(setLoading('pending'));
+
       if (error.response) {
         console.log('Error ', error.response.data);
-        ToastAndroid.show(
-          'Perhatian email dan password anda ',
-          ToastAndroid.LONG,
-        );
+        ToastAndroid.show(error.response.data.message, ToastAndroid.LONG);
       } else {
         console.log('error cource code', error.message);
-        ToastAndroid.show('Perhatian internet anda', ToastAndroid.LONG);
+        ToastAndroid.show('Maaf Sedang Terjadi kesalahan', ToastAndroid.LONG);
       }
     }
   }
@@ -154,7 +163,12 @@ export default function Login({navigation}) {
         <Gap height={20} />
 
         <TouchableNativeFeedback useForeground>
-          <ButtonSubmit title="Masuk" onPress={handleSubmit(submitLogin)} />
+          <ButtonSubmit
+            title="Masuk"
+            disabled={loading === 'pending'}
+            loading={isLoading}
+            onPress={handleSubmit(submitLogin)}
+          />
         </TouchableNativeFeedback>
         <Gap height={15} />
 

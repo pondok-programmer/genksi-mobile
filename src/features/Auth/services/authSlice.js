@@ -7,6 +7,7 @@ const initialState = {
   latitude: '',
   longitude: '',
   token: '',
+  loading: 'idle',
 };
 
 const authSlice = createSlice({
@@ -22,9 +23,12 @@ const authSlice = createSlice({
     setToken(state, {payload}) {
       state.token = payload;
     },
+    setLoading(state, {payload}) {
+      state.loading = payload;
+    },
   },
 });
 
-export const {setName, setEmail, setToken} = authSlice.actions;
+export const {setName, setEmail, setToken, setLoading} = authSlice.actions;
 
 export default authSlice.reducer;

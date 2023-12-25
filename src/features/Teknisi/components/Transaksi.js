@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {StyleSheet, Text, View, FlatList, Image} from 'react-native';
-import {Background, Header} from '../../../components';
+import {EmptyBackground, Header} from '../../../components';
 
 export default function Transaksi({navigation}) {
   const [ready, setReady] = useState(true);
@@ -57,7 +57,7 @@ export default function Transaksi({navigation}) {
 
   return (
     <View style={{flex: 1}}>
-      <Background />
+      <EmptyBackground />
       <Header title="Transaksi" onPress={() => navigation.goBack()} />
       {ready ? (
         <View style={styles.ViewLoading}>

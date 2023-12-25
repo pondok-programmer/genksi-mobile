@@ -1,5 +1,15 @@
+import {PermissionsAndroid} from 'react-native';
+
+//  Permission Android
+
+const Permit = PermissionsAndroid.PERMISSIONS;
+export const AccessFineLocation = Permit.ACCESS_FINE_LOCATION;
+export const AccessCoarseLocation = Permit.ACCESS_COARSE_LOCATION;
+export const PermissionCamera = Permit.CAMERA;
+
 // Colors
 export const colors = {
+  primary: '#637aff',
   PRIMARY: '#183240',
   DESTROY: 'tomato',
   ABU_ABU: '#282534',

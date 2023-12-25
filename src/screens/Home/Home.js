@@ -19,8 +19,6 @@ import {IconMenu, ImgprofilePicture} from '../../assets';
 import {Gap} from '../../components';
 import {colors} from '../../utils/constant';
 import api from '../../services/axiosInstance';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {useDispatch, useSelector} from 'react-redux';
 
 export default function Home({navigation}) {
   const [modalVisible, setModalVisible] = useState(false);
@@ -123,8 +121,6 @@ export default function Home({navigation}) {
   useEffect(() => {
     fetchData();
   }, []);
-
-  // ! DRAWER LAYOUTING
 
   return (
     <View style={{flex: 1}}>

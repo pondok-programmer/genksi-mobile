@@ -1,75 +1,143 @@
-import React, {useState} from 'react';
-import {StyleSheet, Text, View, Image, FlatList, Button} from 'react-native';
-import {Background, Gap, Header} from '../../../components';
+import React, {useState, useEffect} from 'react';
+import {
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  ScrollView,
+  TextInput,
+  TouchableOpacity,
+  Linking,
+} from 'react-native';
+import {ButtonAction, EmptyBackground, Gap, Header} from '../../../components';
+import api from '../../../services/axiosInstance';
+import {ImgCCTV} from '../../../assets';
+import {colors} from '../../../utils/constant';
 
-export default function OrderCctv({navigation}) {
-  const [ready, setReady] = useState(true);
+export default function OrderCctv({navigation, route}) {
+  const [jumlah, setJumlah] = useState(0);
   const [dataOrder, setDataOrder] = useState(null);
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [ready, setReady] = useState(false);
+  setTimeout(() => setReady(true), 1500);
 
-  setTimeout(() => {
-    setReady(false);
-    setDataOrder(orders);
-  }, 1500);
+  useEffect(() => {
+    if (route && route.params && route.params.selectedProduct) {
+      setSelectedProduct(route.params.selectedProduct);
+    }
+  }, [route]);
 
-  const orders = [
-    {
-      id: 1,
-      buyerId: 101,
-      productId: 201,
-      productName: 'CCTV Model X',
-      price: 200,
-      description:
-        'Panasonic 4 0MP  Support H 264 amp MJPEG dual 4M 2688 1520 amp 25 30fps 3M 2304xl296 Smart',
-      ownerName: 'MUh. partijan. SS',
-      imageUri:
-        'https://image.made-in-china.com/2f0j00EBRQnTjcgMoV/CCTV-Camera-HKD-80830-.jpg', // Ganti URL_GAMBAR_CCTV_X dengan URL gambar untuk CCTV X
-    },
-    {
-      id: 2,
-      buyerId: 102,
-      productId: 202,
-      productName: 'CCTV Model Y',
-      price: 250,
-      description:
-        'Support H 264 amp MJPEG dual codec Max 20fps 4M 2688 1520 amp 25 30fps 3M 2304xl296 Smar',
-      ownerName: 'Sujanto parnum S.pd',
-      imageUri: 'https://4.imimg.com/data4/RU/NM/MY-6509051/hd-cctv-camera.jpg', // Ganti URL_GAMBAR_CCTV_Y dengan URL gambar untuk CCTV Y
-    },
-  ];
+  //! handle WhastApp
+  async function bukaWhatsApp() {
+    const phoneNumber = '+6282161196119';
+    try {
+      await Linking.openURL(`https://wa.me/${phoneNumber}`);
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
-  const renderOrder = ({item}) => (
-    <View style={styles.orderItem}>
-      <Image source={{uri: item.imageUri}} style={styles.orderImage} />
-      <View style={styles.orderDetails}>
-        {/* <Text style={styles.orderName}>{item.productName}</Text>
-        <Text style={styles.orderText}>ID Pembeli: {item.buyerId}</Text> */}
-        <Text style={styles.orderText}>ID Product: {item.productId}</Text>
-        <Text style={styles.orderText}>Harga: ${item.price}</Text>
-        <Text style={styles.orderText}>Deskripsi: {item.description}</Text>
-        <Text style={styles.orderText}>Pemilik: {item.ownerName}</Text>
-        <Gap height={10} />
-        <Button title="beli" color={'tomato'} />
-      </View>
-    </View>
-  );
+  // order product
+  async function handleOrderProduct(id) {
+    try {
+      const response = await api.post(`/teknisi/order/${id}`);
+      console.log('order cctv', response.data.data);
+    } catch (error) {
+      if (error.response) {
+        console.log('error from server', error.response.data);
+      } else {
+        console.log('Error', error.message);
+      }
+    }
+  }
 
   return (
     <View style={{flex: 1}}>
-      <Background />
+      <EmptyBackground />
       <Header title="Order cctv" onPress={() => navigation.goBack()} />
-      {ready ? (
+      {ready && (
+        <ScrollView stickyHeaderIndices={[0]} stickyHeaderHiddenOnScroll>
+          <View style={styles.container}>
+            <View style={styles.viewImgProduct}>
+              <Image source={ImgCCTV} style={{width: '80%', height: '70%'}} />
+            </View>
+            <Text style={styles.textProductTitle}>
+              {selectedProduct?.nama_produk}
+            </Text>
+            <View style={{padding: 20}}>
+              <TouchableOpacity onPress={bukaWhatsApp}>
+                <Text style={styles.textOrderTitle}>WhatsApp</Text>
+              </TouchableOpacity>
+              <Gap height={20} />
+              <View style={styles.viewRecipt}>
+                <Text style={{color: 'black'}}>Kategori</Text>
+                <Text style={{color: 'black', maxWidth: 150}} numberOfLines={1}>
+                  {selectedProduct?.kategori}
+                </Text>
+              </View>
+              <View style={styles.viewRecipt}>
+                <Text style={{color: 'black'}}>Merk</Text>
+                <Text style={{color: 'black', maxWidth: 150}} numberOfLines={1}>
+                  {selectedProduct?.merk}
+                </Text>
+              </View>
+              <View style={styles.viewRecipt}>
+                <Text style={{color: 'black'}}>Resolusi</Text>
+                <Text style={{color: 'black', maxWidth: 150}} numberOfLines={1}>
+                  {selectedProduct?.resolusi}
+                </Text>
+              </View>
+              <View style={styles.viewRecipt}>
+                <Text style={{color: 'black'}}>Tipe</Text>
+                <Text style={{color: 'black', maxWidth: 150}} numberOfLines={1}>
+                  {selectedProduct?.tipe}
+                </Text>
+              </View>
+              <View style={styles.viewRecipt}>
+                <Text style={{color: 'black'}}>No Rek Pembayaran</Text>
+                <Text style={{color: 'black'}}>09123091238</Text>
+              </View>
+              <View style={styles.viewRecipt}>
+                <Text style={{color: 'black'}}>Tanggal pembayaran</Text>
+                <Text style={{color: 'black'}}>
+                  {new Date().toDateString()}
+                </Text>
+              </View>
+              <View style={styles.viewRecipt}>
+                <Text style={{color: 'black'}}>Jumlah</Text>
+                <TextInput
+                  placeholder="jumlah pembelian"
+                  style={styles.textInput}
+                  value={jumlah === 0 ? '' : jumlah.toString()}
+                  onChangeText={text => {
+                    if (/^\d*$/.test(text)) {
+                      if (text === '') {
+                        setJumlah(0);
+                      } else {
+                        setJumlah(Math.max(1, parseInt(text)));
+                      }
+                    }
+                  }}
+                  placeholderTextColor={'black'}
+                />
+              </View>
+              <View style={styles.viewRecipt}>
+                <Text style={{color: 'black'}}>Total order</Text>
+                <Text style={{color: 'black'}}>
+                  Rp{selectedProduct?.harga},-
+                </Text>
+              </View>
+            </View>
+          </View>
+          <ButtonAction title="Beli Sekarang" />
+          <Gap height={20} />
+        </ScrollView>
+      )}
+      {!ready && (
         <View style={styles.ViewLoading}>
           <Text style={[styles.textLoading, {fontSize: 16}]}>
             Memuat formulir
           </Text>
-        </View>
-      ) : (
-        <View style={{padding: 20}}>
-          <FlatList
-            data={orders}
-            renderItem={renderOrder}
-            keyExtractor={item => item.id.toString()}
-          />
         </View>
       )}
     </View>
@@ -77,13 +145,74 @@ export default function OrderCctv({navigation}) {
 }
 
 const styles = StyleSheet.create({
+  textOrderTitle: {
+    backgroundColor: 'white',
+    padding: 15,
+    borderRadius: 30,
+    textAlign: 'center',
+    color: 'black',
+    fontWeight: '500',
+    fontSize: 16,
+    borderWidth: 1,
+    elevation: 3,
+  },
+  textInput: {
+    marginLeft: 90,
+    flex: 1,
+    color: 'black',
+  },
+  viewReciptKet: {
+    flexDirection: 'row',
+    backgroundColor: 'white',
+    height: 60,
+    elevation: 3,
+    borderRadius: 40 / 2,
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 20,
+    marginHorizontal: 10,
+    marginBottom: 10,
+  },
+  viewRecipt: {
+    flexDirection: 'row',
+    backgroundColor: 'white',
+    height: 40,
+    elevation: 3,
+    borderRadius: 40 / 2,
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 20,
+    marginHorizontal: 10,
+    marginBottom: 10,
+  },
+  textProductTitle: {
+    color: 'black',
+    textAlign: 'center',
+    fontSize: 17,
+    fontWeight: 'bold',
+  },
+  viewImgProduct: {
+    margin: 10,
+    height: 270,
+    borderRadius: 10,
+    overflow: 'hidden',
+    elevation: 5,
+    backgroundColor: colors.WHITE,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  container: {
+    width: '100%',
+    alignSelf: 'center',
+    maxWidth: 520,
+  },
   textLoading: {
     position: 'absolute',
     width: '100%',
     height: '100%',
     textAlign: 'center',
     textAlignVertical: 'center',
-    color: 'grey',
+    color: 'black',
     flex: 1,
     fontStyle: 'italic',
   },
@@ -97,36 +226,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 20,
     textAlign: 'center',
-    color: '#333',
-  },
-  orderItem: {
-    flexDirection: 'row',
-    marginBottom: 20,
-    backgroundColor: '#fff',
-    borderRadius: 10,
-    elevation: 4,
-    overflow: 'hidden',
-  },
-  orderImage: {
-    width: 120,
-    height: '100%',
-    aspectRatio: 1,
-    borderTopLeftRadius: 10,
-    borderBottomLeftRadius: 10,
-  },
-  orderDetails: {
-    flex: 1,
-    padding: 15,
-  },
-  orderText: {
-    fontSize: 14,
-    color: '#555',
-    marginBottom: 5,
-  },
-  orderName: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 5,
     color: '#333',
   },
 });

@@ -1,22 +1,25 @@
 import {
   Alert,
   Image,
-  Linking,
   PermissionsAndroid,
   ScrollView,
   StyleSheet,
   Text,
-  ToastAndroid,
-  TouchableNativeFeedback,
   TouchableOpacity,
   View,
 } from 'react-native';
 import React, {useState} from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {useDispatch, useSelector} from 'react-redux';
+import {useDispatch} from 'react-redux';
 import {useForm} from 'react-hook-form';
 import EncryptedStorage from 'react-native-encrypted-storage';
-import {Background, ButtonAction, Gap, Header} from '../../../components';
+import {
+  Background,
+  ButtonAction,
+  EmptyBackground,
+  Gap,
+  Header,
+} from '../../../components';
 import {FormInput} from '../../Auth';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import {colors} from '../../../utils/constant';
@@ -96,7 +99,7 @@ export default function EditUserProfile({navigation}) {
 
   return (
     <View style={{flex: 1}}>
-      <Background />
+      <EmptyBackground />
       <ScrollView stickyHeaderIndices={[0]} stickyHeaderHiddenOnScroll>
         <Header title="Perbarui Profil" onPress={() => navigation.goBack()} />
         {ready && (
@@ -120,7 +123,8 @@ export default function EditUserProfile({navigation}) {
                   />
                 )}
               </View>
-              <Text style={styles.textUsername}>Rafi zimraan A.W</Text>
+              <Gap height={10} />
+              {/* <Text style={styles.textUsername}>Rafi zimraan A.W</Text> */}
             </TouchableOpacity>
 
             <Gap height={10} />

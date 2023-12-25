@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   Text,
@@ -8,6 +8,7 @@ import {
   Image,
   Dimensions,
   ToastAndroid,
+  ActivityIndicator,
 } from 'react-native';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -18,6 +19,27 @@ import {colors} from '../../../utils/constant';
 const height = Dimensions.get('window').height;
 
 export default function ProfileMember({navigation}) {
+  const [ready, setReady] = useState(false);
+  setTimeout(() => setReady(true), 1500);
+
+  const [dataProfile, setDataProfile] = useState({
+    data: [
+      {
+        id: 1,
+        id_user: 1,
+        id_atasan: null,
+        photo_profile: null,
+        nama_lengkap: 'distributor',
+        nomor_telepon: '081234567890',
+        provinsi: 'Jawa Barat',
+        kabupaten: 'Bandung',
+        alamat: 'Jalan Jalan',
+        created_at: '2023-11-28T07:05:59.000000Z',
+        updated_at: '2023-11-28T07:05:59.000000Z',
+      },
+    ],
+  });
+
   // handle logOut
   const handleLogOut = () => {
     Alert.alert('Perhatian!', 'Apakah anda ingin keluar', [
@@ -51,49 +73,77 @@ export default function ProfileMember({navigation}) {
     }
   }
 
+  // data profile
+  async function handleProfile() {
+    try {
+      const response = await api.get('/profile');
+      console.log('data', response.data.data);
+      setDataProfile(response.data.data);
+    } catch (error) {
+      if (error.response) {
+        console.log('error from server', error.response.data);
+      } else {
+        console.log('error', error.message);
+      }
+    }
+  }
+
+  useEffect(() => {
+    // handleProfile();
+  }, []);
   return (
     <View style={{flex: 1, backgroundColor: colors.BLUE}}>
       <Header title="Profil Anda" onPress={() => navigation.goBack()} />
-      <View style={[styles.Container]}>
-        <ScrollView stickyHeaderHiddenOnScroll>
-          <View style={styles.viewProfile}>
-            <View style={styles.imgPfp}>
-              <Icon
-                name={'account-circle'}
-                size={180}
-                color={'grey'}
-                style={{position: 'absolute'}}
+      {ready && (
+        <View style={[styles.Container]}>
+          <ScrollView stickyHeaderHiddenOnScroll stickyHeaderIndices={[0]}>
+            <View style={styles.viewProfile}>
+              <View style={styles.imgPfp}>
+                <Icon
+                  name={'account-circle'}
+                  size={180}
+                  color={'grey'}
+                  style={{position: 'absolute'}}
+                />
+              </View>
+              <Text style={styles.textUsername}>nama_lengkap</Text>
+            </View>
+            <View style={styles.viewProfileDetail}>
+              <Text style={styles.textUserDetail}>nama_lengkap</Text>
+              <Text style={styles.textUserDetail}>kabupaten</Text>
+              <Text style={styles.textUserDetail}>provinsi</Text>
+              <Gap height={30} />
+
+              <ButtonAction
+                title="Perbarui Profil"
+                backgroundColor={colors.BLUE}
+                onPress={() => navigation.navigate('UpdateProfile')}
+              />
+              <Gap height={15} />
+              <ButtonAction
+                title="Keluar"
+                backgroundColor="tomato"
+                onPress={handleLogOut}
               />
             </View>
-            <Text style={styles.textUsername}>Rafi zimraan A.W</Text>
-          </View>
-          <View style={styles.viewProfileDetail}>
-            <Text style={styles.textUserDetail}>Parjimen</Text>
-            <Text style={styles.textUserDetail}>0897338723</Text>
-            <Text style={styles.textUserDetail}>DIY</Text>
-            <Gap height={30} />
-
-            <ButtonAction
-              title="Perbarui Profil"
-              backgroundColor={colors.BLUE}
-              onPress={() => navigation.navigate('UpdateProfile')}
-            />
-            <Gap height={15} />
-            <ButtonAction
-              title="Keluar"
-              backgroundColor="tomato"
-              onPress={handleLogOut}
-              //   loading={status == 'pending'}
-              //   disabled={status == 'pending'}
-            />
-          </View>
-        </ScrollView>
-      </View>
+          </ScrollView>
+        </View>
+      )}
+      {!ready && (
+        <View style={styles.loading}>
+          <ActivityIndicator size={'large'} color={'black'} />
+        </View>
+      )}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
+  loading: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   Container: {
     height: '100%',
     width: '100%',
@@ -147,13 +197,13 @@ const styles = StyleSheet.create({
     height: height * 2,
     width: '100%',
     maxWidth: 480,
-    alignSelf: 'center',
   },
   textUsername: {
     color: 'black',
     fontSize: 20,
     margin: 20,
     fontWeight: '500',
+    alignSelf: 'center',
   },
   viewProfile: {
     alignItems: 'center',
