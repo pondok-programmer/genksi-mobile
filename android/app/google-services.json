@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "67217863533",
+    "project_id": "genksi-69ed1",
+    "storage_bucket": "genksi-69ed1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:67217863533:android:a12ac334ac2b5f56c5e064",
+        "android_client_info": {
+          "package_name": "com.genksi"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAuTlvgPU2AwMA6dVbFIXJs46xQSlAR6kk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
