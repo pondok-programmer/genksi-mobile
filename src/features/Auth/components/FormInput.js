@@ -1,17 +1,15 @@
+import DatePicker from '@react-native-community/datetimepicker';
+import {Picker} from '@react-native-picker/picker';
+import React, {useState} from 'react';
+import {Controller} from 'react-hook-form';
 import {
-  Button,
   StyleSheet,
   Text,
   TextInput,
   TouchableNativeFeedback,
   View,
 } from 'react-native';
-import React, {useState} from 'react';
-import {useForm, Controller} from 'react-hook-form';
-import {Picker} from '@react-native-picker/picker';
-import DatePicker from '@react-native-community/datetimepicker';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {colors} from '../../../utils/constant';
 
 export default function FormInput({
   type = 'text',
@@ -29,6 +27,9 @@ export default function FormInput({
   errorMessage = 'Field tidak boleh kosong',
 }) {
   const [showPassword, setShowPassword] = useState(secureTextEntry);
+  const [isFocused, setIsFocused] = useState(false);
+  const handleFocused = () => setIsFocused(true);
+  const handleBlur = () => setIsFocused(false);
 
   // Date handler
   const [showDate, setShowDate] = useState(false);
@@ -51,7 +52,11 @@ export default function FormInput({
       render={({field: {value, onChange}}) => (
         <View style={{height: 85}}>
           {errors?.[name] && <Text style={styles.textError}>Perlu diisi</Text>}
-          <View style={styles.container}>
+          <View
+            style={[
+              styles.container,
+              {borderColor: isFocused ? 'black' : 'dodgerblue'},
+            ]}>
             <Icon
               name={iconName}
               color={'white'}
@@ -65,6 +70,8 @@ export default function FormInput({
                   style={styles.textInput}
                   onChangeText={onChange}
                   value={value}
+                  onBlur={handleBlur}
+                  onFocus={handleFocused}
                   placeholder={placeholder}
                   secureTextEntry={showPassword}
                   keyboardType={keyboardType}

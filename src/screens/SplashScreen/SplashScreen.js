@@ -1,11 +1,9 @@
-import {StyleSheet, View, Image, StatusBar} from 'react-native';
 import React, {useEffect} from 'react';
+import {Image, StatusBar, StyleSheet, View} from 'react-native';
+import EncryptedStorage from 'react-native-encrypted-storage';
 import {ImgApplogo} from '../../assets';
 import {Gap} from '../../components';
 import {colors} from '../../utils/constant';
-import EncryptedStorage from 'react-native-encrypted-storage';
-import {useSelector, useDispatch} from 'react-redux';
-import {setToken} from '../../features/Auth/services/authSlice';
 
 export default function SplashScreen({navigation}) {
   // const {token} = useSelector(state => state.auth);
@@ -35,6 +33,8 @@ export default function SplashScreen({navigation}) {
           navigation.replace('DistributorHome');
         } else if (userRole === 'member') {
           navigation.replace('Home');
+        } else if (userRole === 'Koordinator_teknisi') {
+          navigation.replace('Korwil');
         } else {
           navigation.replace('Login');
         }

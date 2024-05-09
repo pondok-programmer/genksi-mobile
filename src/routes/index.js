@@ -1,22 +1,17 @@
-import React, {useEffect, useState} from 'react';
-import {NavigationContainer, useNavigation} from '@react-navigation/native';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import RNBootSplash from 'react-native-bootsplash';
 import messaging from '@react-native-firebase/messaging';
+import {useNavigation} from '@react-navigation/native';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import React, {useEffect, useState} from 'react';
 
 import {
-  Distributor,
-  Home,
-  Korwil,
-  LibDemo,
-  Login,
-  OnBoarding,
-  Product,
-  Register,
-  SplashScreen,
-  Teknisi,
-  MapKorwil,
-} from '../screens';
+  DataProduct,
+  DistributorHome,
+  KategoriProduct,
+  MapMember,
+  MapTeknisi,
+  ProfileDistributor,
+} from '../features/Distributor';
+import {Menu, ProfileMember, TransaksiMember} from '../features/Home';
 import {
   Dasboard,
   Map,
@@ -26,15 +21,19 @@ import {
   Transaksi,
   UpdateProfile,
 } from '../features/Teknisi';
-import {Menu, ProfileMember, TransaksiMember} from '../features/Home';
 import {
-  DataProduct,
-  DistributorHome,
-  KategoriProduct,
-  MapMember,
-  MapTeknisi,
-  ProfileDistributor,
-} from '../features/Distributor';
+  Distributor,
+  Home,
+  Korwil,
+  LibDemo,
+  Login,
+  MapKorwil,
+  OnBoarding,
+  Product,
+  Register,
+  SplashScreen,
+  Teknisi,
+} from '../screens';
 
 const Stack = createNativeStackNavigator();
 
@@ -83,7 +82,7 @@ export default function Navigator() {
         statusBarColor: 'transparent',
         statusBarTranslucent: true,
       }}
-      initialRouteName={'LibDemo'}>
+      initialRouteName={'SplashScreen'}>
       <Stack.Screen name="SplashScreen" component={SplashScreen} />
       <Stack.Screen name="OnBoarding" component={OnBoarding} />
       <Stack.Screen name="Login" component={Login} />

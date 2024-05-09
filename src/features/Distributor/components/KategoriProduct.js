@@ -1,6 +1,6 @@
-import React, {useState, useEffect} from 'react';
-import {View, Text, StyleSheet, ScrollView} from 'react-native';
-import {Background, EmptyBackground, Header, Styles} from '../../../components';
+import React, {useEffect, useState} from 'react';
+import {ScrollView, StyleSheet, Text, View} from 'react-native';
+import {EmptyBackground, Header, Styles} from '../../../components';
 import api from '../../../services/axiosInstance';
 import {colors} from '../../../utils/constant';
 
@@ -12,7 +12,7 @@ export default function KategoriProduct({navigation}) {
     try {
       const response = await api.get('/distributor/kategori-produk');
       setDataKategori(response.data);
-      // console.log('data kategori', response.data);
+      console.log('data kategori', response.data);
     } catch (e) {
       if (e.response) {
         console.log('error from server', e.response.data);

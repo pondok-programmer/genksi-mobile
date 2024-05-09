@@ -1,18 +1,19 @@
-import {StyleSheet, Text, View, ScrollView} from 'react-native';
 import React, {useEffect, useState} from 'react';
-import {Background, EmptyBackground, Header, Styles} from '../../../components';
-import {colors} from '../../../utils/constant';
+import {ScrollView, StyleSheet, Text, View} from 'react-native';
+import {EmptyBackground, Header, Styles} from '../../../components';
 import api from '../../../services/axiosInstance';
+import {colors} from '../../../utils/constant';
 
 export default function DataProduct({navigation}) {
-  const [dataProduct, setDataProduct] = useState(null);
+  const [dataProduct, setDataProduct] = useState([]);
   const [ready, setReady] = useState(true);
 
   async function fetchDataProduct() {
     try {
       const response = await api.get('/distributor/produk');
-      setDataProduct(response.data);
-      //   console.log('data product', response.data);
+      setDataProduct(response.data['data produk']);
+      // ! JIKA KALAU END PONT MENGUNAKAN SPACE
+      console.log('data product', response.data['data produk']);
     } catch (e) {
       if (e.response) {
         console.log('error from server', e.response.data);
@@ -30,14 +31,15 @@ export default function DataProduct({navigation}) {
 
   const renderDataProduct = (item, index) => (
     <View style={styles.productItem} key={index}>
-      {/* <Image source={{uri: item.imageUri}} style={styles.kategoriImage} /> */}
+      {/* <Image source={{uri: item?.imageUri}} style={styles.kategoriImage} /> */}
       <View style={styles.productDetails}>
-        <Text style={styles.productName}>Nama: {item.nama_produk}</Text>
-        <Text style={styles.productName}>Kategori: {item.kategori}</Text>
-        <Text style={styles.productName}>Merk: {item.merk}</Text>
-        <Text style={styles.productName}>Tipe: {item.tipe}</Text>
-        <Text style={styles.productJumlahProduct}>harga: {item.harga}</Text>
-        <Text style={styles.productStok}>stok: {item.total_stok_produk}</Text>
+        <Text style={styles.productName}>Nama: {item?.nama_produk}</Text>
+        <Text style={styles.productName}>Kategori: {item?.kategori}</Text>
+        <Text style={styles.productName}>Merk: {item?.merk}</Text>
+        <Text style={styles.productName}>Tipe: {item?.tipe}</Text>
+        <Text style={styles.productName}>Resolusi: {item?.resolusi}</Text>
+        <Text style={styles.productJumlahProduct}>harga: {item?.harga}</Text>
+        <Text style={styles.productStok}>stok: {item?.total_stok_produk}</Text>
       </View>
     </View>
   );
@@ -55,11 +57,12 @@ export default function DataProduct({navigation}) {
       ) : (
         <ScrollView stickyHeaderIndices={[0]} stickyHeaderHiddenOnScroll>
           <View style={styles.ContentData}>
-            {dataProduct?.map((kategori, index) => (
-              <View style={styles.kategoriItem} key={index}>
-                {renderDataProduct(kategori)}
-              </View>
-            ))}
+            {dataProduct &&
+              dataProduct.map((kategori, index) => (
+                <View style={styles.kategoriItem} key={index}>
+                  {renderDataProduct(kategori)}
+                </View>
+              ))}
           </View>
         </ScrollView>
       )}

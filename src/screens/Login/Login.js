@@ -1,3 +1,5 @@
+import React, {useState} from 'react';
+import {useForm} from 'react-hook-form';
 import {
   StyleSheet,
   Text,
@@ -5,14 +7,12 @@ import {
   TouchableNativeFeedback,
   View,
 } from 'react-native';
-import React, {useState} from 'react';
-import {Background, ButtonAction, Gap} from '../../components';
-import {ButtonSubmit, FormInput} from '../../features/Auth';
-import api from '../../services/axiosInstance';
 import EncryptedStorage from 'react-native-encrypted-storage';
-import {useForm} from 'react-hook-form';
 import {useDispatch, useSelector} from 'react-redux';
-import {setName, setLoading} from '../../features/Auth/services/authSlice';
+import {Background, Gap} from '../../components';
+import {ButtonSubmit, FormInput} from '../../features/Auth';
+import {setLoading, setName} from '../../features/Auth/services/authSlice';
+import api from '../../services/axiosInstance';
 
 export default function Login({navigation}) {
   const dispatch = useDispatch();
@@ -112,6 +112,10 @@ export default function Login({navigation}) {
       } else if (response.data.message.includes('distributor')) {
         await EncryptedStorage.setItem('userRole', 'distributor');
         navigation.replace('DistributorHome');
+        ToastAndroid.show('Selamat datang', ToastAndroid.SHORT);
+      } else if (response.data.message.includes('koordinator_teknisi')) {
+        await EncryptedStorage.setItem('userRole', 'koordinator_teknisi');
+        navigation.replace('Korwil');
         ToastAndroid.show('Selamat datang', ToastAndroid.SHORT);
       } else {
         navigation.replace('Login');

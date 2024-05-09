@@ -1,20 +1,19 @@
+import React, {useState} from 'react';
+import {useForm} from 'react-hook-form';
 import {
+  Alert,
+  KeyboardAvoidingView,
+  ScrollView,
   StyleSheet,
   Text,
+  ToastAndroid,
   TouchableNativeFeedback,
   View,
-  Alert,
-  ScrollView,
-  KeyboardAvoidingView,
-  ToastAndroid,
 } from 'react-native';
-import React, {useState} from 'react';
 import {Background, Gap, Header} from '../../components';
 import {ButtonSubmit, FormInput} from '../../features/Auth';
-import {Picker} from '@react-native-picker/picker';
-import {colors} from '../../utils/constant';
-import {useForm} from 'react-hook-form';
 import api from '../../services/axiosInstance';
+import {colors} from '../../utils/constant';
 
 export default function Register({navigation}) {
   const [nama, setNama] = useState('');
@@ -133,9 +132,14 @@ export default function Register({navigation}) {
                 </TouchableNativeFeedback>
               </View>
 
-              <View style={{alignItems: 'center', flexDirection: 'row'}}>
-                <Text>Sudah punya akun? </Text>
-                <Text>Login </Text>
+              <Gap height={15} />
+              <View style={styles.ViewHaveAcount}>
+                <Text style={styles.TextTitleQuestion}>Sudah punya akun? </Text>
+                <TouchableNativeFeedback
+                  useForeground
+                  onPress={() => navigation.goBack()}>
+                  <Text style={styles.TextDescQuestion}>Login</Text>
+                </TouchableNativeFeedback>
               </View>
             </View>
           )}
@@ -147,6 +151,20 @@ export default function Register({navigation}) {
 }
 
 const styles = StyleSheet.create({
+  TextDescQuestion: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: colors.BLUE,
+  },
+  TextTitleQuestion: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: colors.BLACK,
+  },
+  ViewHaveAcount: {
+    flexDirection: 'row',
+    alignSelf: 'center',
+  },
   textContainer: {
     color: 'black',
     fontSize: 19,

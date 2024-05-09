@@ -1,23 +1,23 @@
+import Geolocation from '@react-native-community/geolocation';
+import {useNavigation} from '@react-navigation/native';
+import React, {useState} from 'react';
 import {
   Button,
+  Image,
+  Modal,
+  ScrollView,
   StyleSheet,
   Text,
   View,
-  Modal,
-  Image,
-  ScrollView,
 } from 'react-native';
-import React, {useState} from 'react';
-import MapView, {PROVIDER_GOOGLE, Marker, Callout} from 'react-native-maps';
-import Geolocation from '@react-native-community/geolocation';
-import axios from 'axios';
-import {Gap} from '../../../components';
+import MapView, {Callout, Marker, PROVIDER_GOOGLE} from 'react-native-maps';
 import {ImgprofilePicture} from '../../../assets';
+import {Gap} from '../../../components';
 import {colors} from '../../../utils/constant';
-import {ButtonSubmit} from '../../Auth';
-import {useNavigation} from '@react-navigation/native';
 
 export default function Product() {
+  const [modalVisible, setModalVisible] = useState(false);
+
   const navigation = useNavigation();
   const [coords, setCoords] = useState({
     latitude: -6.175724,
@@ -57,7 +57,6 @@ export default function Product() {
     fetch();
   }
 
-  const [modalVisible, setModalVisible] = useState(false);
   const [teknisiDetail, setTeknisiDetail] = useState({
     id: null,
     name: '',

@@ -1,5 +1,4 @@
 import axios from 'axios';
-import {useSelector} from 'react-redux';
 import EncryptedStorage from 'react-native-encrypted-storage';
 
 const api = axios.create({
@@ -7,7 +6,7 @@ const api = axios.create({
   headers: {
     'Content-Type': 'application/json',
     Accept: 'application/json',
-    Authorization: `Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczovL2dlbmtzaS5lamN0ZWNobm9sb2d5LmNvbS9hcGkvbG9naW4iLCJpYXQiOjE3MDM0NzgzNzMsImV4cCI6MTcwMzQ4MTk3MywibmJmIjoxNzAzNDc4MzczLCJqdGkiOiJ4dVlLMGZaaDdkOWlMcXdjIiwic3ViIjoiMSIsInBydiI6IjIzYmQ1Yzg5NDlmNjAwYWRiMzllNzAxYzQwMDg3MmRiN2E1OTc2ZjcifQ.H6HD4F4yLtqKb5xqfjfyTIQAL0ptvaCDOwVXe_wzRrA`,
+    // Authorization: `Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczovL2dlbmtzaS5lamN0ZWNobm9sb2d5LmNvbS9hcGkvbG9naW4iLCJpYXQiOjE3MDM0NzgzNzMsImV4cCI6MTcwMzQ4MTk3MywibmJmIjoxNzAzNDc4MzczLCJqdGkiOiJ4dVlLMGZaaDdkOWlMcXdjIiwic3ViIjoiMSIsInBydiI6IjIzYmQ1Yzg5NDlmNjAwYWRiMzllNzAxYzQwMDg3MmRiN2E1OTc2ZjcifQ.H6HD4F4yLtqKb5xqfjfyTIQAL0ptvaCDOwVXe_wzRrA`,
   },
 });
 
