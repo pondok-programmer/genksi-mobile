@@ -1,20 +1,19 @@
+import Geolocation from '@react-native-community/geolocation';
+import axios from 'axios';
+import React, {useState} from 'react';
 import {
   Button,
+  Image,
+  Modal,
+  ScrollView,
   StyleSheet,
   Text,
   View,
-  Modal,
-  Image,
-  ScrollView,
 } from 'react-native';
-import React, {useEffect, useState} from 'react';
-import MapView, {PROVIDER_GOOGLE, Marker, Callout} from 'react-native-maps';
-import Geolocation from '@react-native-community/geolocation';
-import axios from 'axios';
+import MapView, {Callout, Marker, PROVIDER_GOOGLE} from 'react-native-maps';
+import {IconProfile} from '../../../assets';
 import {Gap} from '../../../components';
-import {ImgprofilePicture} from '../../../assets';
 import {colors} from '../../../utils/constant';
-import api from '../../../services/axiosInstance';
 
 export default function Map() {
   const [coords, setCoords] = useState({
@@ -156,7 +155,7 @@ export default function Map() {
           <View>
             <Gap height={30} />
             <View style={styles.viewImgProduct}>
-              <Image source={ImgprofilePicture} />
+              <Image source={IconProfile} />
             </View>
             <Text style={styles.textNameTeknisi}>{teknisiDetail.name}</Text>
             <Gap height={20} />
@@ -165,7 +164,7 @@ export default function Map() {
               return (
                 <View key={index} style={styles.viewContainer}>
                   <View style={styles.ViewContentProductCctv}>
-                    <Image source={ImgprofilePicture} />
+                    <Image source={IconProfile} />
                     <View style={styles.viewTextDatasProduct}>
                       <Text style={styles.textProductTitleProduct}>
                         {value.name}

@@ -6,7 +6,7 @@ const api = axios.create({
   headers: {
     'Content-Type': 'application/json',
     Accept: 'application/json',
-    // Authorization: `Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczovL2dlbmtzaS5lamN0ZWNobm9sb2d5LmNvbS9hcGkvbG9naW4iLCJpYXQiOjE3MDM0NzgzNzMsImV4cCI6MTcwMzQ4MTk3MywibmJmIjoxNzAzNDc4MzczLCJqdGkiOiJ4dVlLMGZaaDdkOWlMcXdjIiwic3ViIjoiMSIsInBydiI6IjIzYmQ1Yzg5NDlmNjAwYWRiMzllNzAxYzQwMDg3MmRiN2E1OTc2ZjcifQ.H6HD4F4yLtqKb5xqfjfyTIQAL0ptvaCDOwVXe_wzRrA`,
+    //   Authorization: `Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczovL2dlbmtzaS5lamN0ZWNobm9sb2d5LmNvbS9hcGkvbG9naW4iLCJpYXQiOjE3MDM0NzgzNzMsImV4cCI6MTcwMzQ4MTk3MywibmJmIjoxNzAzNDc4MzczLCJqdGkiOiJ4dVlLMGZaaDdkOWlMcXdjIiwic3ViIjoiMSIsInBydiI6IjIzYmQ1Yzg5NDlmNjAwYWRiMzllNzAxYzQwMDg3MmRiN2E1OTc2ZjcifQ.H6HD4F4yLtqKb5xqfjfyTIQAL0ptvaCDOwVXe_wzRrA`,
   },
 });
 
@@ -42,6 +42,8 @@ api.interceptors.response.use(
         const token = response.data.authorization.token;
 
         console.log('TOKEN BARU:', token);
+
+        await EncryptedStorage.setItem('token', token);
 
         originalRequest.headers.Authorization = `Bearer ${token}`;
 

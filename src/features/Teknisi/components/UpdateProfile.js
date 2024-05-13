@@ -1,3 +1,5 @@
+import React, {useState} from 'react';
+import {useForm} from 'react-hook-form';
 import {
   Alert,
   Image,
@@ -8,21 +10,12 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, {useState} from 'react';
+import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useDispatch} from 'react-redux';
-import {useForm} from 'react-hook-form';
-import EncryptedStorage from 'react-native-encrypted-storage';
-import {
-  Background,
-  ButtonAction,
-  EmptyBackground,
-  Gap,
-  Header,
-} from '../../../components';
-import {FormInput} from '../../Auth';
-import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+import {ButtonAction, EmptyBackground, Gap, Header} from '../../../components';
 import {colors} from '../../../utils/constant';
+import {FormInput} from '../../Auth';
 
 export default function EditUserProfile({navigation}) {
   const dispatch = useDispatch();
@@ -100,7 +93,10 @@ export default function EditUserProfile({navigation}) {
   return (
     <View style={{flex: 1}}>
       <EmptyBackground />
-      <ScrollView stickyHeaderIndices={[0]} stickyHeaderHiddenOnScroll>
+      <ScrollView
+        stickyHeaderIndices={[0]}
+        stickyHeaderHiddenOnScroll
+        style={{padding: 15}}>
         <Header title="Perbarui Profil" onPress={() => navigation.goBack()} />
         {ready && (
           <View style={styles.container}>
@@ -117,7 +113,7 @@ export default function EditUserProfile({navigation}) {
                 ) : (
                   <Icon
                     name={'account-circle'}
-                    size={180}
+                    size={170}
                     color={'grey'}
                     style={{position: 'absolute'}}
                   />
@@ -168,13 +164,13 @@ export default function EditUserProfile({navigation}) {
               control={control}
               errors={errors}
             />
-
-            <Gap height={10} />
+            {/* <Gap height={10} /> */}
             <ButtonAction
               title="Perbarui Profile"
               onPress={updateProfile}
               backgroundColor={colors.BLUE}
             />
+            <Gap height={40} />
           </View>
         )}
       </ScrollView>
@@ -185,14 +181,14 @@ export default function EditUserProfile({navigation}) {
 
 const styles = StyleSheet.create({
   imgPfp: {
-    width: 200,
-    height: 200,
+    width: 170,
+    height: 170,
     backgroundColor: 'white',
-    borderRadius: 50,
+    borderRadius: 45,
     overflow: 'hidden',
     alignItems: 'center',
     justifyContent: 'center',
-    elevation: 10,
+    elevation: 5,
     borderWidth: 0.4,
   },
   viewProfile: {

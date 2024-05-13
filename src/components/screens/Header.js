@@ -1,11 +1,11 @@
+import React from 'react';
 import {
+  StatusBar,
   StyleSheet,
   Text,
-  View,
   TouchableNativeFeedback,
-  StatusBar,
+  View,
 } from 'react-native';
-import React from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {colors} from '../../utils/constant';
 
@@ -48,6 +48,6 @@ const styles = StyleSheet.create({
     padding: 15,
     width: '100%',
     zIndex: 9,
-    marginTop: statBarHeight,
+    // marginTop: statBarHeight,
   }),
 });

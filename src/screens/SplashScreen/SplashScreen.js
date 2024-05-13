@@ -22,6 +22,7 @@ export default function SplashScreen({navigation}) {
     // } catch (error) {
     //   console.log('Error', error);
     // }
+
     try {
       const token = await EncryptedStorage.getItem('token');
       const userRole = await EncryptedStorage.getItem('userRole');
@@ -32,7 +33,7 @@ export default function SplashScreen({navigation}) {
         } else if (userRole === 'distributor') {
           navigation.replace('DistributorHome');
         } else if (userRole === 'member') {
-          navigation.replace('Home');
+          navigation.replace('MainNavigator');
         } else if (userRole === 'Koordinator_teknisi') {
           navigation.replace('Korwil');
         } else {

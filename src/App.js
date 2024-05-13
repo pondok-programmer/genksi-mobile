@@ -1,9 +1,9 @@
-import React from 'react';
-import {store} from './redux';
-import {Provider} from 'react-redux';
-import Navigator from './routes';
 import {NavigationContainer} from '@react-navigation/native';
+import React from 'react';
 import RNBootSplash from 'react-native-bootsplash';
+import {Provider} from 'react-redux';
+import {store} from './redux';
+import Navigator from './routes';
 
 export default function App() {
   return (
@@ -14,5 +14,3 @@ export default function App() {
     </Provider>
   );
 }
-
-// bootsplash

@@ -1,26 +1,13 @@
-import {
-  Button,
-  StyleSheet,
-  Text,
-  View,
-  Modal,
-  Image,
-  ScrollView,
-  ActivityIndicator,
-  ImageBackground,
-  TouchableNativeFeedback,
-  ToastAndroid,
-} from 'react-native';
-import React, {useState, useEffect} from 'react';
-import MapView, {PROVIDER_GOOGLE, Marker, Callout} from 'react-native-maps';
 import Geolocation from '@react-native-community/geolocation';
 import axios from 'axios';
-import {IconMenu, ImgprofilePicture} from '../../assets';
-import {Gap} from '../../components';
-import {colors} from '../../utils/constant';
-import api from '../../services/axiosInstance';
+import React, {useEffect, useState} from 'react';
+import {StyleSheet, Text, ToastAndroid, View} from 'react-native';
+import MapView, {Callout, Marker, PROVIDER_GOOGLE} from 'react-native-maps';
+import {ModalMember} from '..';
+import api from '../../../services/axiosInstance';
+import {colors} from '../../../utils/constant';
 
-export default function Home({navigation}) {
+export default function MapsMember({navigation}) {
   const [modalVisible, setModalVisible] = useState(false);
   const [daftarTeknisi, setDaftarTeknisi] = useState([]);
   const [daftarProduct, setDaftarProduct] = useState([]);
@@ -31,10 +18,16 @@ export default function Home({navigation}) {
     longitude: 106.827129,
   });
 
+  useEffect(() => {
+    fetchData();
+    requestAuthGeo();
+  }, []);
+
+  // PENCARIAN LOKASI TEKNISI
   function requestAuthGeo() {
     Geolocation.requestAuthorization(
       () => {
-        console.log('success');
+        // console.log('success');
         Geolocation.getCurrentPosition(
           ({coords}) => {
             setCoords(coords);
@@ -51,7 +44,7 @@ export default function Home({navigation}) {
     );
   }
 
-  const [teknisiDetail, setTeknisiDetail] = useState({
+  const [dataTeknisi, setDataTeknisi] = useState({
     id: null,
     name: '',
     email: '',
@@ -64,7 +57,7 @@ export default function Home({navigation}) {
     },
   });
 
-  // Data teknisi
+  // DATA ALL TEKNISI
   async function fetchData() {
     try {
       const response = await api.get('/member/teknisi');
@@ -86,11 +79,26 @@ export default function Home({navigation}) {
     }
   }
 
+  // DATA PRODUCT CCTV
+  async function dataProductCctv(id) {
+    try {
+      const response = await api.get(`/member/produk-teknisi/${id}`);
+      // console.log('product CCTV', response.data.message);
+      setDaftarProduct(response.data.data);
+    } catch (error) {
+      if (error.response) {
+        console.log('error from server', error.response.data);
+      } else {
+        console.log('Error fetching product details', error.message);
+      }
+    }
+  }
+
   // ! FCM PRODUCT
   async function beliCCTV(selectedProduct) {
     try {
       const response = axios.post('http://localhost:3000/send-fcm', {
-        device_token: teknisiDetail.device_token,
+        device_token: setDataTeknisi.device_token,
         title: `User Anu Membeli CCTV ${selectedProduct.name}`,
         body: 'Harap periksa ketersediaan produk',
       });
@@ -104,39 +112,22 @@ export default function Home({navigation}) {
     }
   }
 
-  async function dataProductCctv(id) {
-    try {
-      const response = await api.get(`/member/produk-teknisi/${id}`);
-      console.log('product CCTV', response.data.message);
-      setDaftarProduct(response.data.data);
-    } catch (error) {
-      if (error.response) {
-        console.log('error from server', error.response.data);
-      } else {
-        console.log('Error fetching product details', error.message);
-      }
-    }
-  }
-
-  useEffect(() => {
-    fetchData();
-  }, []);
-
   return (
     <View style={{flex: 1}}>
       {/* image menu */}
-      <TouchableNativeFeedback
+      {/* <TouchableNativeFeedback
         useForeground
         onPress={() => navigation.navigate('Menu')}>
         <ImageBackground source={IconMenu} style={styles.bgMenu} />
-      </TouchableNativeFeedback>
+      </TouchableNativeFeedback> */}
       <MapView
         showsCompass
         showsMyLocationButton
         style={{flex: 1}}
         provider={PROVIDER_GOOGLE}
         region={{
-          ...coords,
+          latitude: coords?.latitude || 0.0,
+          longitude: coords?.longitude || 0.0,
           latitudeDelta: 0.01,
           longitudeDelta: 0.01,
         }}>
@@ -150,7 +141,7 @@ export default function Home({navigation}) {
             key={index}
             onPress={() => {
               setModalVisible(true);
-              setTeknisiDetail(value);
+              setDataTeknisi(value);
               console.log('ID teknisi yang dipilih:', value.id);
               console.log(value);
               dataProductCctv(value.id);
@@ -159,73 +150,21 @@ export default function Home({navigation}) {
               setTimeout(() => setReady(true), 2000);
             }}
             coordinate={{
-              latitude: parseFloat(value.latitude),
-              longitude: parseFloat(value.longitude),
+              latitude: parseFloat(value?.latitude) || 0.0,
+              longitude: parseFloat(value?.longitude) || 0.0,
             }}></Marker>
         ))}
       </MapView>
 
-      <Button title="get current position" onPress={requestAuthGeo} />
-
       {/* MODAL */}
-      <Modal
-        visible={modalVisible}
-        animationType="slide"
-        onRequestClose={() => setModalVisible(false)}>
-        <View style={styles.ModalContainer}>
-          {!ready ? (
-            <View style={styles.loadingActivityIndicator}>
-              <ActivityIndicator size="large" color="black" />
-              <Gap height={70} />
-              <Text style={styles.textLoading}>Memuat formulir..</Text>
-            </View>
-          ) : (
-            <ScrollView>
-              <View>
-                <Gap height={20} />
-                <View style={styles.viewImgProduct}>
-                  <Image source={ImgprofilePicture} />
-                </View>
-                <Text style={styles.textNameTeknisi}>{teknisiDetail.name}</Text>
-                <Gap height={10} />
-                <Text style={styles.textListProduct}>Daftar Cctv:</Text>
-                {daftarProduct.map((value, index) => {
-                  return (
-                    <View key={index} style={styles.modalProduct}>
-                      <Text style={styles.textListProduct}>
-                        Nama cctv: {value.nama_produk}
-                      </Text>
-                      <Text style={styles.textListProduct}>
-                        merk: {value.merk}
-                      </Text>
-                      <Text style={styles.textListProduct}>
-                        tipe: {value.tipe}
-                      </Text>
-                      <Text style={styles.textListProduct}>
-                        resolusi: {value.resolusi}
-                      </Text>
-                      <Text style={styles.textListProduct}>
-                        harga: {value.harga}
-                      </Text>
-                      <Text style={styles.textListProduct}>
-                        stok product cctv: {value.jumlah_stok_produk_teknisi}
-                      </Text>
-                      <Gap height={10} />
-                      <View style={{marginHorizontal: 30}}>
-                        <Button
-                          title="Membeli Cctv"
-                          onPress={() => beliCCTV(value)}
-                          color={'green'}
-                        />
-                      </View>
-                    </View>
-                  );
-                })}
-              </View>
-            </ScrollView>
-          )}
-        </View>
-      </Modal>
+      <ModalMember
+        modalVisible={modalVisible}
+        setModalVisible={setModalVisible}
+        ready={ready}
+        dataTeknisi={dataTeknisi}
+        daftarProduct={daftarProduct}
+        beliCCTV={beliCCTV}
+      />
     </View>
   );
 }

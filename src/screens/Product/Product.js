@@ -1,17 +1,17 @@
+import axios from 'axios';
+import React from 'react';
 import {
   Button,
-  StyleSheet,
-  Text,
-  View,
+  Image,
   Linking,
   ScrollView,
   StatusBar,
-  Image,
+  StyleSheet,
+  Text,
+  View,
 } from 'react-native';
-import React from 'react';
+import {IconProfile} from '../../assets';
 import {Background, Gap} from '../../components';
-import {ImgprofilePicture} from '../../assets';
-import axios from 'axios';
 
 export default function Product() {
   const userDetail = [
@@ -81,7 +81,7 @@ export default function Product() {
           <View key={user.id} style={styles.viewContent}>
             <View style={styles.viewProfileUser}>
               <Image
-                source={ImgprofilePicture}
+                source={IconProfile}
                 style={{height: 100, borderRadius: 10}}
               />
               <Text style={styles.textUserDetail}>{user.name}</Text>
@@ -90,7 +90,7 @@ export default function Product() {
 
             <View style={styles.viewContextProductCctv}>
               <Image
-                source={ImgprofilePicture}
+                source={IconProfile}
                 style={{height: 100, borderRadius: 10}}
               />
               <View style={styles.textProduct}>

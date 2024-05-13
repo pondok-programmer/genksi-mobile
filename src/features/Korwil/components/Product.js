@@ -11,7 +11,7 @@ import {
   View,
 } from 'react-native';
 import MapView, {Callout, Marker, PROVIDER_GOOGLE} from 'react-native-maps';
-import {ImgprofilePicture} from '../../../assets';
+import {IconProfile} from '../../../assets';
 import {Gap} from '../../../components';
 import {colors} from '../../../utils/constant';
 
@@ -142,7 +142,7 @@ export default function Product() {
           <View>
             <Gap height={30} />
             <View style={styles.viewImgProduct}>
-              <Image source={ImgprofilePicture} />
+              <Image source={IconProfile} />
             </View>
             <Text style={styles.textNameTeknisi}>{teknisiDetail.name}</Text>
             <Gap height={20} />
@@ -160,7 +160,7 @@ export default function Product() {
               return (
                 <View key={index} style={styles.viewContainer}>
                   <View style={styles.ViewContentProductCctv}>
-                    <Image source={ImgprofilePicture} />
+                    <Image source={IconProfile} />
                     <View style={styles.viewTextDatasProduct}>
                       <Text style={styles.textProductTitleProduct}>
                         {value.name}

@@ -107,7 +107,7 @@ export default function Login({navigation}) {
         ToastAndroid.show('Selamat datang', ToastAndroid.SHORT);
       } else if (response.data.message.includes('member')) {
         await EncryptedStorage.setItem('userRole', 'member');
-        navigation.replace('Home');
+        navigation.replace('MainNavigator');
         ToastAndroid.show('Selamat datang', ToastAndroid.SHORT);
       } else if (response.data.message.includes('distributor')) {
         await EncryptedStorage.setItem('userRole', 'distributor');
