@@ -13,11 +13,14 @@ import {
   MapTeknisi,
   ProfileDistributor,
 } from '../features/Distributor';
-import {Menu, TransaksiMember} from '../features/Home';
+import {Menu} from '../features/Home';
 import {
   DasboardMember,
+  DetailProduct,
   DetailTeknisiMember,
+  LayerSuccesPage,
   MapsMember,
+  UpdateProfileMember,
 } from '../features/HomeMain';
 import {
   Dasboard,
@@ -158,7 +161,6 @@ export default function Navigator() {
       <Stack.Screen name="Menu" component={Menu} />
       <Stack.Screen name="TransaksiTeknisi" component={Transaksi} />
       <Stack.Screen name="OrderCctvTeknisi" component={OrderCctv} />
-      <Stack.Screen name="TransaksiMember" component={TransaksiMember} />
       <Stack.Screen name="Distributor" component={Distributor} />
       <Stack.Screen name="DistributorHome" component={DistributorHome} />
       <Stack.Screen name="Kategori" component={KategoriProduct} />
@@ -173,6 +175,13 @@ export default function Navigator() {
       <Stack.Screen name="ProfileMain" component={ProfileMain} />
       <Stack.Screen name="DasboardMember" component={DasboardMember} />
       <Stack.Screen name="MapsMember" component={MapsMember} />
+      <Stack.Screen name="DetailProductMember" component={DetailProduct} />
+      <Stack.Screen name="SuccesCheckOut" component={LayerSuccesPage} />
+      <Stack.Screen
+        name="UpdateProfileMember"
+        component={UpdateProfileMember}
+      />
+
       <Stack.Screen
         name="DetailTeknisiMember"
         component={DetailTeknisiMember}

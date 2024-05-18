@@ -1,31 +1,38 @@
-import {useNavigation} from '@react-navigation/native'; // tambahkan ini
+import {useNavigation} from '@react-navigation/native';
 import React, {useEffect, useState} from 'react';
 import {
+  Alert,
   Image,
-  SafeAreaView,
+  PermissionsAndroid,
+  RefreshControl,
   ScrollView,
   StyleSheet,
   Text,
+  ToastAndroid,
   TouchableNativeFeedback,
-  TouchableOpacity,
   View,
 } from 'react-native';
 import EncryptedStorage from 'react-native-encrypted-storage';
-import {ModalFirstMember} from '..';
-import {IconShoppingDasboard, ImgMaps, ImgWarning} from '../../../assets';
-import {EmptyBackground, Gap, SearchInput, Styles} from '../../../components';
+import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+import {EmptyContent, HeaderComponent, ModalFirstMember, ProductItem} from '..';
+import {ImgMaps} from '../../../assets';
+import {Gap, Styles} from '../../../components';
+import api from '../../../services/axiosInstance';
 import {colors} from '../../../utils/constant';
 
-export default function DasboardMember() {
+const DashboardMember = ({route}) => {
   const navigation = useNavigation();
   const [modalVisible, setModalVisible] = useState(false);
-  const [teknisiIsSelected, setTeknisiIsSelected] = useState(false);
+  const [dataProduct, setDataProduct] = useState([]);
+  const [imageUploaded, setImageUploaded] = useState({});
+  const [ready, setReady] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
-    async function checkFistTime() {
+    async function checkFirstTime() {
       try {
         const value = await EncryptedStorage.getItem('modalVisible');
-        if (value === 'null') {
+        if (value !== 'true') {
           setModalVisible(true);
           await EncryptedStorage.setItem('modalVisible', 'true');
         }
@@ -33,127 +40,221 @@ export default function DasboardMember() {
         console.log('error', error.message);
       }
     }
-    checkFistTime();
+
+    checkFirstTime();
+    fetchDataProduk();
   }, []);
 
-  const [dataProduct, setDataProduct] = useState([
-    {
-      id: 1,
-      id_user: 1,
-      photo_profile:
-        'https://i.pinimg.com/736x/d6/e8/ff/d6e8ff05c7fec836bce48d365e3a1763.jpg',
-      title: 'Neountram LG',
-      resolusi: '238GB',
-    },
-    {
-      id: 2,
-      id_user: 2,
-      photo_profile:
-        'https://i.pinimg.com/736x/d6/e8/ff/d6e8ff05c7fec836bce48d365e3a1763.jpg',
-      title: 'Staram Neo',
-      resolusi: '988GB',
-    },
-  ]);
+  async function fetchDataProduk(id) {
+    try {
+      setRefreshing(true);
+      const response = await api.get('/member/order-belum-transfer');
+      console.log('data product', response.data.message);
+      setDataProduct(response.data.data);
+
+      const storedImages = await EncryptedStorage.getItem('uploadedImages');
+      if (storedImages) {
+        setImageUploaded(JSON.parse(storedImages));
+      }
+      setReady(true);
+      setRefreshing(false);
+    } catch (error) {
+      if (error.message) {
+        console.log('error from server', error.response.data);
+      } else {
+        console.log('error from source code ', error.message);
+      }
+      setRefreshing(false);
+    }
+  }
+
+  const uploadBuktiTransfer = async (id_order, file) => {
+    const formData = new FormData();
+    formData.append('photo_bukti_pembayaran', {
+      uri: file.uri,
+      name: file.name,
+      type: file.type,
+    });
+
+    try {
+      const response = await api.post(
+        `/member/upload-bukti-transfer/${id_order}`,
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        },
+      );
+      console.log('Upload bukti transfer:', response.data.message);
+      fetchDataProduk();
+      await EncryptedStorage.setItem(
+        'uploadedImages',
+        JSON.stringify({
+          ...imageUploaded,
+          [id_order]: file.uri,
+        }),
+      );
+
+      setImageUploaded(prev => ({
+        ...prev,
+        [id_order]: file.uri,
+      }));
+      ToastAndroid.show('Bukti transfer berhasil diupload', ToastAndroid.SHORT);
+    } catch (error) {
+      console.error(
+        'Error uploading bukti transfer:',
+        error.response || error.message,
+      );
+    }
+  };
+
+  const handleUploadTransaction = id_order => {
+    Alert.alert(
+      'Perhatian',
+      'Apakah Anda ingin upload bukti transfer?',
+      [
+        {text: 'Batal', style: 'cancel'},
+        {
+          text: 'Ya',
+          onPress: () => handleImagePicker(id_order),
+          style: 'destructive',
+        },
+      ],
+      {cancelable: true},
+    );
+  };
+
+  const handleImagePicker = async id_order => {
+    const imagePicker = async from => {
+      try {
+        const method =
+          from === 'gallery'
+            ? launchImageLibrary({mediaType: 'photo', quality: 0.2})
+            : launchCamera({mediaType: 'photo', quality: 0.2});
+        const {assets} = await method;
+        if (assets) {
+          const {fileName: name, uri, type} = assets[0];
+          await uploadBuktiTransfer(id_order, {uri, name, type});
+        }
+      } catch (error) {
+        console.error('Error selecting image:', error);
+      }
+    };
+
+    const PermissionCamera = async () => {
+      try {
+        const granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.CAMERA,
+        );
+        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+          imagePicker('camera');
+        }
+      } catch (error) {
+        console.error('Error requesting camera permission:', error);
+      }
+    };
+
+    Alert.alert(
+      '',
+      'Ambil dari gambar...',
+      [
+        {
+          text: 'Kamera',
+          onPress: () => PermissionCamera(),
+        },
+        {
+          text: 'Gallery',
+          onPress: () => imagePicker('gallery'),
+        },
+      ],
+      {cancelable: true},
+    );
+  };
 
   return (
-    <SafeAreaView style={Styles.container}>
-      <EmptyBackground />
+    <ScrollView
+      style={Styles.container}
+      stickyHeaderHiddenOnScroll={true}
+      stickyHeaderIndices={[0]}
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={fetchDataProduk} />
+      }>
       <Gap height={35} />
+      <HeaderComponent />
+      <TouchableNativeFeedback
+        useForeground
+        onPress={() => navigation.navigate('MapsMember')}
+        style={styles.bodyImgMaps}>
+        <Image source={ImgMaps} style={styles.imgMaps} />
+      </TouchableNativeFeedback>
+      <Gap height={20} />
       <View style={{marginHorizontal: 16}}>
-        <View style={styles.ViewHeaderTitle}>
-          <Text style={styles.TxtTitleDasb}>Genksi</Text>
-          <View style={styles.ViewIconShopp}>
-            <Image source={IconShoppingDasboard} style={styles.IconShopp} />
-          </View>
-          <View style={styles.ViewCheckOut}>
-            <Text style={styles.TxtCheckOut}>2</Text>
-          </View>
+        <View style={styles.bodyProduck}>
+          <Text style={styles.TxtProduck}>Product</Text>
         </View>
-        <Gap height={20} />
-        <SearchInput
-          backgroundColor={colors.GREY}
-          borderRadius={10}
-          placeholder={''}
-          placeholderTextColor={colors.BLACK}
-        />
-        <Gap height={20} />
-        <Text style={styles.TxtSearchMap}>Mencari Lokasi Teknisi</Text>
         <Gap height={10} />
-        <TouchableNativeFeedback
-          useForeground
-          onPress={() => navigation.navigate('MapsMember')}
-          style={styles.bodyImgMaps}>
-          <Image source={ImgMaps} style={{height: 150, width: '100%'}} />
-        </TouchableNativeFeedback>
-        <Gap height={20} />
-        <ScrollView
-          accessibilityActions={[0]}
-          stickyHeaderHiddenOnScroll={true}>
-          <View style={styles.bodyProduck}>
-            <Text style={styles.TxtProduck}>Product</Text>
-            <Text style={styles.TxtProduckAll}>See All</Text>
-          </View>
-          <Gap height={10} />
-          {teknisiIsSelected ? (
-            <View style={styles.ViewNothingContent}>
-              <View>
-                <Image source={ImgWarning} style={{height: 180, width: 100}} />
-              </View>
-              <Gap height={5} />
-              <Text style={styles.TxtNothingProduct}>Product Not found!!</Text>
-            </View>
-          ) : (
-            <View style={styles.ViewCOntentProduck}>
-              {dataProduct.map((val, ind) => (
-                <TouchableOpacity style={styles.contentProduck} key={ind}>
-                  <Image
-                    source={{uri: val.photo_profile}}
-                    style={styles.ImgProduk}
-                  />
-                  <Gap height={2} />
-                  <Text style={styles.titleProduck}>{val.title}</Text>
-                  <Gap height={2} />
-                  <Text style={styles.resolusiProduck}>{val.resolusi}</Text>
-                </TouchableOpacity>
-              ))}
-            </View>
-          )}
-        </ScrollView>
-
-        <ModalFirstMember
-          modalVisible={modalVisible}
-          setModalVisible={setModalVisible}
-          handleOnPress={() => navigation.replace('MapsMember')}
-        />
+        {dataProduct.length === 0 ? (
+          <EmptyContent />
+        ) : (
+          <>
+            {dataProduct.map((val, ind) => (
+              <ProductItem
+                key={ind}
+                product={val}
+                onUploadTransaction={handleUploadTransaction}
+                imageUploaded={imageUploaded}
+              />
+            ))}
+          </>
+        )}
       </View>
-    </SafeAreaView>
+
+      {!ready && dataProduct.length > 0 && (
+        <View style={styles.loadingContainer}>
+          <Text style={styles.loading}>Memuat formulir...</Text>
+        </View>
+      )}
+
+      <ModalFirstMember
+        modalVisible={modalVisible}
+        setModalVisible={setModalVisible}
+        handleOnPress={() => navigation.replace('MapsMember')}
+      />
+    </ScrollView>
   );
-}
+};
 
 const styles = StyleSheet.create({
+  imgMaps: {
+    height: 150,
+    width: 335,
+    borderRadius: 10,
+    alignSelf: 'center',
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loading: {
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
   bodyImgMaps: {
     height: 150,
-    width: '100%',
-    borderWidth: 0.5,
-    borderColor: colors.BLACK,
+    width: 335,
+    borderRadius: 10,
+    alignSelf: 'center',
+  },
+  ViewNothingContent: {
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   TxtNothingProduct: {
     fontSize: 16,
     color: colors.BLACK,
     fontWeight: '600',
-  },
-  ViewNothingContent: {alignItems: 'center', justifyContent: 'center'},
-  resolusiProduck: {
-    fontSize: 14,
-    fontWeight: '400',
-    color: colors.GRAYDEFAULT,
-    marginLeft: 5,
-  },
-  titleProduck: {
-    fontSize: 14,
-    fontWeight: '400',
-    color: colors.BLACK,
-    marginLeft: 5,
   },
   ImgProduk: {
     height: 150,
@@ -161,78 +262,14 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 10,
     borderTopRightRadius: 10,
   },
-  ViewCOntentProduck: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 20,
-  },
-  contentProduck: {
-    borderRadius: 10,
-    width: 150,
-    height: 200,
-    backgroundColor: colors.WHITE,
-    borderWidth: 0.5,
-    borderColor: colors.BLACK,
-    elevation: 5,
-  },
-  TxtProduckAll: {
-    color: colors.BLUE,
-    fontWeight: '400',
-    fontSize: 14,
-  },
   bodyProduck: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    alignItems: 'flex-start',
   },
   TxtProduck: {
     fontSize: 20,
     fontWeight: '700',
     color: colors.BLACK,
   },
-  TxtSearchMap: {
-    fontSize: 20,
-    fontWeight: '700',
-    color: colors.BLACK,
-  },
-  TxtCheckOut: {
-    color: colors.WHITE,
-    fontSize: 10,
-  },
-  ViewCheckOut: {
-    position: 'absolute',
-    alignItems: 'center',
-    justifyContent: 'center',
-    right: 0,
-    borderRadius: 10,
-    marginBottom: 10,
-    width: 18,
-    height: 18,
-    backgroundColor: colors.BLUE,
-    borderWidth: 0.3,
-    borderColor: colors.BLACK,
-  },
-  ViewIconShopp: {
-    backgroundColor: colors.WHITE,
-    alignItems: 'center',
-    justifyContent: 'center',
-    height: 35,
-    width: 35,
-    borderRadius: 20,
-    borderWidth: 0.5,
-    borderColor: colors.BLACK,
-  },
-  TxtTitleDasb: {
-    color: colors.BLACK,
-    fontSize: 28,
-    fontWeight: '600',
-  },
-  IconShopp: {
-    height: 15,
-    width: 15,
-  },
-  ViewHeaderTitle: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
 });
+
+export default DashboardMember;

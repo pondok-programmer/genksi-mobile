@@ -60,7 +60,7 @@ export default function Register({navigation}) {
       <KeyboardAvoidingView
         style={{flex: 1}}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-        <ScrollView stickyHeaderHiddenOnScroll>
+        <ScrollView stickyHeaderHiddenOnScroll stickyHeaderIndices={[0]}>
           <Header title="Register" onPress={() => navigation.goBack()} />
           {ready && (
             <View style={styles.container}>

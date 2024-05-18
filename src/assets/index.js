@@ -10,6 +10,7 @@ import ImgProdukCCTV3 from './images/conth3.png';
 import ImgBg from './images/genksiBg.png';
 import ImgGoggleMap from './images/google-maps.png';
 import ImgCCTV from './images/images_cctv.png';
+import ImgNothingPhoto from './images/nothingPhoto.jpg';
 
 import IconProduct from './icons/box.png';
 import IconChecklist from './icons/checklist.png';
@@ -21,8 +22,11 @@ import IconProfile from './icons/profile.png';
 import IconRole from './icons/setting.png';
 import IconShopping from './icons/shopping-cart.png';
 import IconShoppingDasboard from './icons/shopping.png';
+import IconTrash from './icons/trash.png';
 
 export {
+  ImgNothingPhoto,
+  IconTrash,
   IconDangerous,
   ImgWarning,
   ImgProdukCCTV,

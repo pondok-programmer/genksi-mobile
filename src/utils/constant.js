@@ -27,4 +27,5 @@ export const colors = {
   secondaryDark: '#5e35b1',
   secondary200: '#b39ddb',
   secondary800: '#4527a0',
+  NAVY: '#2E3A59',
 };

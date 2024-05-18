@@ -12,29 +12,35 @@ import {EmptyBackground, Gap, Header, Styles} from '../../../components';
 import api from '../../../services/axiosInstance';
 import {colors} from '../../../utils/constant';
 
-export default function DetailTeknisiMember({navigation}) {
-  const [photoTeknisi, setPhotoTeknisi] = useState(null);
-  const [dataTeknisi, setDataTeknisi] = useState({});
-  const [ready, setReady] = useState(false);
+export default function DetailTeknisiMember({navigation, route}) {
+  const {id} = route.params;
+  const [data, setData] = useState({
+    photoTeknisi: null,
+    dataTeknisi: {},
+    ready: false,
+  });
 
   useEffect(() => {
-    DetailBioTeknisi();
-  }, []);
-
-  // PRODUCT DETAIL
-  async function DetailBioTeknisi() {
-    try {
-      const response = await api.get('/member/detail-teknisi/11');
-      setDataTeknisi(response.data.data);
-      setReady(true);
-    } catch (error) {
-      if (error.response) {
-        console.log('error from server', error.response.data);
-      } else {
-        console.log('Error fetching product details', error.message);
+    const fetchDetailBioTeknisi = async teknisiId => {
+      try {
+        const response = await api.get(`/member/detail-teknisi/${teknisiId}`);
+        setData({
+          photoTeknisi: response.data.data.photo_produk,
+          dataTeknisi: response.data.data,
+          ready: true,
+        });
+      } catch (error) {
+        if (error.response) {
+          console.log('error from server', error.response.data);
+        } else {
+          console.log('Error fetching product details', error.message);
+        }
       }
-    }
-  }
+    };
+    fetchDetailBioTeknisi(id);
+  }, [id]);
+
+  const {photoTeknisi, dataTeknisi, ready} = data;
 
   return (
     <SafeAreaView style={Styles.container}>
@@ -47,8 +53,8 @@ export default function DetailTeknisiMember({navigation}) {
             {ready ? (
               <Image
                 source={
-                  photoTeknisi && photoTeknisi.photo_produk
-                    ? {uri: 'https://genksi.ejctechnology.com/photo_produk'}
+                  photoTeknisi
+                    ? {uri: `https://genksi.ejctechnology.com/${photoTeknisi}`}
                     : require('../../../assets/icons/profile.png')
                 }
                 style={styles.profileImage}
@@ -57,24 +63,35 @@ export default function DetailTeknisiMember({navigation}) {
               <ActivityIndicator size="large" color={colors.PRIMARY} />
             )}
           </View>
-          <Text style={styles.profileName}>{dataTeknisi.name}</Text>
+          {ready ? (
+            <Text style={styles.profileName}>{dataTeknisi?.name}</Text>
+          ) : (
+            <ActivityIndicator size="large" color={colors.PRIMARY} />
+          )}
         </View>
         <View style={styles.detailContainer}>
-          <View style={styles.detailItem}>
-            <Text style={styles.detailLabel}>Email:</Text>
-            <Text style={styles.detailValue}>{dataTeknisi.email}</Text>
-          </View>
-          <View style={styles.detailItem}>
-            <Text style={styles.detailLabel}>Nomor Telepon:</Text>
-            <Text style={styles.detailValue}>
-              {dataTeknisi.profile && dataTeknisi.profile.nomor_telepon}
-            </Text>
-          </View>
+          <DetailItem label="Email:" value={dataTeknisi?.email} ready={ready} />
+          <DetailItem
+            label="Nomor Telepon:"
+            value={dataTeknisi?.profile?.nomor_telepon}
+            ready={ready}
+          />
         </View>
       </ScrollView>
     </SafeAreaView>
   );
 }
+
+const DetailItem = ({label, value, ready}) => (
+  <View style={styles.detailItem}>
+    <Text style={styles.detailLabel}>{label}</Text>
+    {ready ? (
+      <Text style={styles.detailValue}>{value}</Text>
+    ) : (
+      <ActivityIndicator size="large" color={colors.PRIMARY} />
+    )}
+  </View>
+);
 
 const styles = StyleSheet.create({
   scrollContainer: {

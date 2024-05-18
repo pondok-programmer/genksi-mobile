@@ -1,47 +1,71 @@
 import {useNavigation} from '@react-navigation/native';
-import React from 'react';
+import React, {useEffect} from 'react';
 import {
   ActivityIndicator,
-  Button,
   Image,
   Modal,
   ScrollView,
   StyleSheet,
   Text,
   TouchableNativeFeedback,
+  TouchableOpacity,
   View,
 } from 'react-native';
-import {IconProfile} from '../../../assets';
-import {Gap} from '../../../components';
+import {useDispatch, useSelector} from 'react-redux';
+import {IconProfile, ImgNothingPhoto} from '../../../assets';
+import {EmptyBackground, Gap} from '../../../components';
 import {colors} from '../../../utils/constant';
+import {setLoading} from '../../Auth/services/authSlice';
 
 export default function ModalMember({
   modalVisible,
-  ready,
   dataTeknisi,
   daftarProduct,
   beliCCTV,
   setModalVisible,
 }) {
+  console.log('profile teknisi', dataTeknisi);
   const navigation = useNavigation();
+  const dispatch = useDispatch();
+  const BASE_URL = 'https://genksi.ejctechnology.com/';
+  const loading = useSelector(state => state.auth.loading);
+
+  useEffect(() => {
+    if (modalVisible) {
+      dispatch(setLoading('pending'));
+
+      setTimeout(() => {
+        dispatch(setLoading('idle'));
+      }, 2000);
+    }
+  }, [modalVisible, dispatch]);
+
   return (
     <Modal
       visible={modalVisible}
       animationType="slide"
       onRequestClose={() => setModalVisible(false)}>
       <View style={styles.ModalContainer}>
-        {!ready ? (
+        <EmptyBackground />
+        {loading === 'pending' ? (
           <View style={styles.loadingActivityIndicator}>
             <ActivityIndicator size="large" color="black" />
             <Gap height={70} />
             <Text style={styles.textLoading}>Memuat formulir..</Text>
           </View>
         ) : (
-          <ScrollView style={{padding: 15}}>
+          <ScrollView
+            style={{padding: 15}}
+            stickyHeaderHiddenOnScroll
+            stickyHeaderIndices={[0]}>
             <Gap height={20} />
             <TouchableNativeFeedback
               useForeground
-              onPress={() => navigation.navigate('DetailTeknisiMember')}
+              onPress={() =>
+                navigation.navigate('DetailTeknisiMember', {
+                  id: dataTeknisi?.id,
+                })
+              }
               style={styles.viewImgProduct}>
               <Image
                 source={IconProfile}
@@ -49,35 +73,54 @@ export default function ModalMember({
               />
             </TouchableNativeFeedback>
             <Gap height={10} />
-            <Text style={styles.textNameTeknisi}>{dataTeknisi.name}</Text>
+            <Text style={styles.textNameTeknisi}>{dataTeknisi?.name}</Text>
             <Gap height={10} />
-            <Text style={styles.textListProduct}>Daftar Cctv:</Text>
+            <Text style={styles.txtTitleProduk}>Daftar CCTV:</Text>
             {daftarProduct.map((value, index) => {
               return (
-                <View key={index} style={styles.modalProduct}>
-                  <Text style={styles.textListProduct}>
-                    Nama cctv: {value.nama_produk}
-                  </Text>
-                  <Text style={styles.textListProduct}>merk: {value.merk}</Text>
-                  <Text style={styles.textListProduct}>tipe: {value.tipe}</Text>
-                  <Text style={styles.textListProduct}>
-                    resolusi: {value.resolusi}
-                  </Text>
-                  <Text style={styles.textListProduct}>
-                    harga: {value.harga}
-                  </Text>
-                  <Text style={styles.textListProduct}>
-                    stok product cctv: {value.jumlah_stok_produk_teknisi}
-                  </Text>
+                <TouchableOpacity
+                  key={index}
+                  style={styles.modalProduct}
+                  onPress={() =>
+                    navigation.navigate('DetailProductMember', {
+                      id_produk: value?.id_produk,
+                      id_teknisi: dataTeknisi?.profile.id_user,
+                    })
+                  }>
+                  <Image
+                    source={{uri: BASE_URL + value?.photo_produk}}
+                    style={{height: 150, width: '100%'}}
+                    defaultSource={ImgNothingPhoto}
+                  />
+                  <View style={styles.bodyTextProduk}>
+                    <Text style={styles.textListProduct}>
+                      Nama CCTV: {value?.nama_produk}
+                    </Text>
+                    <Text style={styles.textListProduct}>
+                      Merk: {value?.merk}
+                    </Text>
+                    <Text style={styles.textListProduct}>
+                      Tipe: {value?.tipe}
+                    </Text>
+                    <Text style={styles.textListProduct}>
+                      Resolusi: {value?.resolusi}
+                    </Text>
+                    <Text style={styles.textListProduct}>
+                      Harga: {value?.harga}
+                    </Text>
+                    <Text style={styles.textListProduct}>
+                      Stok produk CCTV: {value?.jumlah_stok_produk_teknisi}
+                    </Text>
+                  </View>
                   <Gap height={10} />
-                  <View style={{marginHorizontal: 50}}>
+                  {/* <View style={{marginHorizontal: 50}}>
                     <Button
-                      title="Membeli Cctv"
+                      title="Membeli CCTV"
                       onPress={() => beliCCTV(value)}
                       color={colors.BLUE}
                     />
-                  </View>
-                </View>
+                  </View> */}
+                </TouchableOpacity>
               );
             })}
           </ScrollView>
@@ -88,6 +131,15 @@ export default function ModalMember({
 }
 
 const styles = StyleSheet.create({
+  txtTitleProduk: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: colors.BLACK,
+  },
+  bodyTextProduk: {
+    padding: 5,
+    gap: 3,
+  },
   loadingActivityIndicator: {
     justifyContent: 'center',
     alignItems: 'center',
@@ -118,7 +170,6 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   viewImgProduct: {
-    // alignSelf: 'center',
     justifyContent: 'center',
     alignItems: 'center',
     overflow: 'hidden',
@@ -131,8 +182,7 @@ const styles = StyleSheet.create({
   },
   textListProduct: {
     color: colors.BLACK,
-    fontSize: 19,
-    marginHorizontal: 20,
+    fontSize: 14,
     fontFamily: 'Poppins-Medium',
   },
 });
