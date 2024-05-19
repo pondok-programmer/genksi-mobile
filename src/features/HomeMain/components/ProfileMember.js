@@ -37,6 +37,8 @@ const ProfileMember = () => {
     try {
       setRefreshing(true);
       const response = await api.get('/member/profile');
+      console.log('data profile', response.data.data[0]);
+      console.log('profiles', response.data.data[0].photo_profile);
       const profile = response.data.data[0];
 
       setProfileData({
@@ -80,6 +82,12 @@ const ProfileMember = () => {
     }
   };
 
+  // // Get full URL for photo
+  const getPhotoUrl = path => {
+    const baseURL = 'https://genksi.ejctechnology.com/';
+    return `${baseURL}${path}`;
+  };
+
   return (
     <View style={styles.container}>
       <ScrollView
@@ -93,7 +101,10 @@ const ProfileMember = () => {
           <View style={styles.profileImage}>
             {isReady ? (
               photoProfile ? (
-                <Image source={{uri: photoProfile}} style={styles.imageStyle} />
+                <Image
+                  source={{uri: getPhotoUrl(photoProfile)}}
+                  style={styles.imageStyle}
+                />
               ) : (
                 <Icon
                   name="account-circle"
@@ -225,6 +236,14 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     color: colors.BLACK,
     fontWeight: '500',
+  },
+  iconStyle: {
+    marginTop: 20,
+  },
+  imageStyle: {
+    width: 200,
+    height: 200,
+    borderRadius: 50,
   },
 });
 

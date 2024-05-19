@@ -11,7 +11,7 @@ export default function LayerSuccesPage({navigation}) {
       </Text>
       <TouchableOpacity
         style={styles.button}
-        onPress={() => navigation.navigate('DasboardMember')}>
+        onPress={() => navigation.navigate('MainNavigator')}>
         <Text style={styles.buttonText}>Mulai</Text>
       </TouchableOpacity>
     </View>

@@ -240,6 +240,7 @@ const styles = StyleSheet.create({
   loading: {
     fontSize: 18,
     fontWeight: 'bold',
+    color: colors.BLACK,
   },
   bodyImgMaps: {
     height: 150,

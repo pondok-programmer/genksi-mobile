@@ -9,7 +9,7 @@ import api from '../../../services/axiosInstance';
 import {colors} from '../../../utils/constant';
 
 export default function MapsMember({navigation}) {
-  // State Hooks
+  const [ready, setReady] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [daftarTeknisi, setDaftarTeknisi] = useState([]);
   const [daftarProduct, setDaftarProduct] = useState([]);
@@ -29,7 +29,6 @@ export default function MapsMember({navigation}) {
       nomor_telepon: '',
     },
   });
-  const [ready, setReady] = useState(false);
 
   // Lifecycle Hooks
   useEffect(() => {
@@ -60,6 +59,7 @@ export default function MapsMember({navigation}) {
   const fetchData = async () => {
     try {
       const response = await api.get('/member/teknisi');
+      console.log('daftar teknisi', response.data.data);
       setDaftarTeknisi(response.data.data);
     } catch (error) {
       handleApiError(error);

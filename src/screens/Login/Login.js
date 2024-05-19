@@ -24,60 +24,6 @@ export default function Login({navigation}) {
     handleSubmit,
   } = useForm();
 
-  // async function submitLogin(authLogin) {
-  //   const {email, password} = authLogin;
-  //   console.log('Login', {
-  //     ...authLogin,
-  //     latitude: '0.0235',
-  //     longitude: '-023233',
-  //   });
-  //   if (!email.includes('@gmail.com')) {
-  //     Alert.alert('Perhatian!', 'Email harus menggunakan @gmail.com');
-  //   } else if (password.length < 6) {
-  //     Alert.alert('Perhatian!', 'Kata sandi minimal 6 karakter');
-  //   } else {
-  //     try {
-  //       const response = await api.post('/login', {
-  //         ...authLogin,
-  //         latitude: '0.0235',
-  //         longitude: '-023233',
-  //       });
-  //       console.log('response', response.data);
-  //       await EncryptedStorage.setItem(
-  //         'token',
-  //         response.data.authorization.token,
-  //       );
-  //       if (response.data.message) {
-  //         // Jika respons menyertakan pesan peran
-  //         // Alert.alert('Peran', response.data.message);
-
-  //         if (response.data.message.includes('teknisi')) {
-  //           // Navigasi ke layar Teknisi jika peran adalah Teknisi
-  //           navigation.navigate('TeknisiScreen');
-  //         } else if (response.data.message.includes('member')) {
-  //           // Navigasi ke layar Home jika peran adalah Member
-  //           navigation.navigate('Home');
-  //           ToastAndroid.show('Selamat datang', ToastAndroid.SHORT);
-  //         }
-  //       } else {
-  //         // Lakukan navigasi ke layar default jika tidak ada pesan peran
-  //         navigation.navigate('Home');
-  //         ToastAndroid.show('Selamat datang', ToastAndroid.SHORT);
-  //       }
-  //     } catch (error) {
-  //       if (error.response) {
-  //         // Handle error responses from the server
-  //         console.log('Error ', error.response.data);
-  //         ToastAndroid.show('Terjadi kesalahan dari server', ToastAndroid.LONG);
-  //       } else {
-  //         // Handle other types of errors
-  //         console.log('error cource code', error.message);
-  //         ToastAndroid.show('Terjadi kesalahan', ToastAndroid.LONG);
-  //       }
-  //     }
-  //   }
-  // }
-
   async function submitLogin(authLogin) {
     const {email, password} = authLogin;
     const formData = {...authLogin, latitude: '0.0235', longitude: '-023233'};

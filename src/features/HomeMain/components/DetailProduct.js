@@ -11,6 +11,7 @@ import {
   StyleSheet,
   Text,
   TextInput,
+  ToastAndroid,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -20,8 +21,6 @@ import api from '../../../services/axiosInstance';
 import {colors} from '../../../utils/constant';
 
 export default function DetailProduct({route}) {
-  console.log('id_produk:', id_produk);
-  console.log('id_teknisi:', id_teknisi);
   const navigation = useNavigation();
   const {id_produk, id_teknisi} = route.params;
   const [jumlah, setJumlah] = useState(1);
@@ -52,24 +51,29 @@ export default function DetailProduct({route}) {
     fetchDetailProduk(id_produk);
   }, [id_produk]);
 
-  const fetchOrderProduk = async (id_produk, id_teknisi) => {
+  const fetchOrderProduk = async () => {
     try {
       const response = await api.post(
         `/member/order/${id_teknisi}/${id_produk}`,
         {jumlah_order_produk: jumlah},
       );
-      console.log(response.data.message);
+      console.log('sukses', response.data.message);
       console.log('order response', response.data.data);
-      Alert.alert('Sukses', 'Pesanan berhasil dilakukan', [
-        {text: 'OK', onPress: () => navigation.replace('SuccesCheckOut')},
-      ]);
+      ToastAndroid.show(response.data.message, ToastAndroid.LONG);
+      navigation.replace('SuccesCheckOut');
     } catch (error) {
       if (error.message) {
         console.log('error from server', error.response.data);
-        Alert.alert('Error', 'Pesanan gagal dilakukan');
+        Alert.alert(
+          'Error',
+          error.response.data.message || 'Pesanan gagal di lakukan',
+        );
       } else {
         console.log('error ordering product', error.message);
-        Alert.alert('Error', 'Pesanan gagal dilakukan');
+        const defaultErrorMessage = 'Pesanan gagal dilakukan';
+        const serverErrorMessage =
+          error.response?.data?.message || defaultErrorMessage;
+        Alert.alert('Error', serverErrorMessage);
       }
     }
   };
@@ -105,7 +109,7 @@ export default function DetailProduct({route}) {
           ) : (
             <ActivityIndicator size={'small'} color={colors.PRIMARY} />
           )}
-          <Gap height={16} />
+          <Gap height={10} />
           <View style={styles.ViewTipeAndMerek}>
             <View style={styles.ViewMerek}>
               {ready ? (
@@ -116,7 +120,7 @@ export default function DetailProduct({route}) {
                 <ActivityIndicator size={'small'} color={colors.PRIMARY} />
               )}
             </View>
-            <Gap height={16} />
+            <Gap height={10} />
             <View style={styles.ViewMerek}>
               {ready ? (
                 <Text style={styles.Txttipe}>Tipe: {dataProdukCctv?.tipe}</Text>
@@ -125,23 +129,35 @@ export default function DetailProduct({route}) {
               )}
             </View>
           </View>
-          <Gap height={20} />
+          <Gap height={10} />
           {ready ? (
             <Text style={styles.TxtDes}>{dataProdukCctv?.deskripsi}</Text>
           ) : (
             <ActivityIndicator size={'small'} color={colors.PRIMARY} />
           )}
           <Gap height={20} />
-          <View style={styles.ViewResolusi}>
-            {ready ? (
-              <Text style={styles.TxtResolusi}>
-                Resolusi: {dataProdukCctv?.resolusi}
-              </Text>
-            ) : (
-              <ActivityIndicator size={'small'} color={colors.PRIMARY} />
-            )}
+          <View style={{flexDirection: 'row', gap: 15}}>
+            <View style={styles.ViewResolusi}>
+              {ready ? (
+                <Text style={styles.TxtResolusi}>
+                  Resolusi: {dataProdukCctv?.resolusi}
+                </Text>
+              ) : (
+                <ActivityIndicator size={'small'} color={colors.PRIMARY} />
+              )}
+            </View>
+
+            <View style={styles.ViewResolusi}>
+              {ready ? (
+                <Text style={styles.TxtResolusi}>
+                  Total Stok: {dataProdukCctv?.total_stok_produk}
+                </Text>
+              ) : (
+                <ActivityIndicator size={'small'} color={colors.PRIMARY} />
+              )}
+            </View>
           </View>
-          <Gap height={15} />
+          <Gap height={20} />
           <View style={styles.ViewJumlah}>
             <Text style={styles.TxtLabel}>Jumlah Produk :</Text>
             <TextInput
@@ -237,12 +253,12 @@ const styles = StyleSheet.create({
   ViewButton: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    gap: 10,
+    gap: 5,
     alignItems: 'center',
   },
   ViewTipeAndMerek: {
     flexDirection: 'row',
-    gap: 10,
+    gap: 15,
   },
   ViewMerek: {
     borderWidth: 0.5,

@@ -5,6 +5,7 @@ import {
   Image,
   KeyboardAvoidingView,
   PermissionsAndroid,
+  RefreshControl,
   ScrollView,
   StyleSheet,
   ToastAndroid,
@@ -13,7 +14,7 @@ import {
 } from 'react-native';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {ButtonAction, EmptyBackground, Gap, Header} from '../../../components';
 import api from '../../../services/axiosInstance';
 import {colors} from '../../../utils/constant';
@@ -21,16 +22,17 @@ import {FormInput} from '../../Auth';
 import {setLoading} from '../../Auth/services/authSlice';
 
 export default function UpdateProfileMember({navigation}) {
-  const [selectedImageCamera, setSelectedImageCamera] = useState(null);
+  const dispatch = useDispatch();
+  const {token} = useSelector(state => state.auth);
+  const [refreshing, setRefreshing] = useState(false);
+  const [selectedImage, setSelectedImage] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const {
     control,
     formState: {errors},
     handleSubmit,
-    setValue,
+    getValues,
   } = useForm();
-
-  const dispatch = useDispatch();
 
   const handleImageResponse = response => {
     if (response.didCancel) {
@@ -39,17 +41,14 @@ export default function UpdateProfileMember({navigation}) {
       console.log('Error:', response.error);
     } else {
       const {fileName: name, uri, type} = response.assets[0];
-      setSelectedImageCamera({uri, name, type});
+      setSelectedImage({uri, name, type});
     }
   };
 
   const handleImagePicker = async () => {
     const imagePicker = source => {
       const options = {
-        title: 'Pilih Gambar',
-        cancelButtonTitle: 'Batal',
-        takePhotoButtonTitle: 'Ambil Gambar dari Kamera',
-        chooseFromLibraryButtonTitle: 'Pilih Gambar dari Galeri',
+        mediaType: 'photo',
         quality: 0.2,
       };
       if (source === 'camera') {
@@ -67,8 +66,8 @@ export default function UpdateProfileMember({navigation}) {
     };
 
     Alert.alert(
-      '',
       'Ambil gambar dari...',
+      '',
       [
         {text: 'Kamera', onPress: permissionCamera},
         {text: 'Galeri', onPress: () => imagePicker('gallery')},
@@ -77,42 +76,42 @@ export default function UpdateProfileMember({navigation}) {
     );
   };
 
-  const fetchUpdateProfile = async data => {
+  async function fetchUpdateProfile(authUpdate) {
+    const formData = new FormData();
+    formData.append('nama_lengkap', authUpdate.nama_lengkap);
+    formData.append('nomor_telepon', authUpdate.nomor_telepon);
+    formData.append('alamat', authUpdate.alamat);
+    formData.append('kabupaten', authUpdate.kabupaten);
+    formData.append('provinsi', authUpdate.provinsi);
+
+    if (selectedImage) {
+      formData.append('photo_profile', {
+        uri: selectedImage.uri,
+        name: selectedImage.name,
+        type: selectedImage.type,
+      });
+    }
+    // console.log('formdata', formData);
+    // return false;
+
     try {
       setIsLoading(true);
       dispatch(setLoading('pending'));
 
-      // Check if selectedImageCamera is not null and the file type is jpg, png, or jpeg
-      if (
-        selectedImageCamera &&
-        !['jpg', 'png', 'jpeg'].includes(selectedImageCamera.type.split('/')[1])
-      ) {
-        ToastAndroid.show(
-          'Photo profile harus berupa file dengan tipe: jpg, png, atau jpeg.',
-          ToastAndroid.LONG,
-        );
-        setIsLoading(false);
-        return;
-      }
-
-      const requestBody = {
-        nama_lengkap: data.nama_lengkap,
-        nomor_telepon: data.nomor_telepon,
-        provinsi: data.provinsi,
-        kabupaten: data.kabupaten,
-        alamat: data.alamat,
-        photo_profile: selectedImageCamera ? selectedImageCamera.uri : null,
-      };
-
-      const response = await api.put(
+      const response = await api.post(
         '/member/update-profile?_method=put',
-        requestBody,
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+            Authorization: `Bearer ${token}`,
+          },
+        },
       );
-
-      ToastAndroid.show(response.data.message, ToastAndroid.LONG);
       setIsLoading(false);
       dispatch(setLoading('idle'));
       navigation.goBack();
+      ToastAndroid.show(response.data.message, ToastAndroid.LONG);
     } catch (error) {
       setIsLoading(false);
       dispatch(setLoading('idle'));
@@ -124,39 +123,27 @@ export default function UpdateProfileMember({navigation}) {
         ToastAndroid.show('Terjadi kesalahan', ToastAndroid.LONG);
       }
     }
-  };
-
-  const onSubmit = data => {
-    confirmUpdateProfile(data);
-  };
-
-  const confirmUpdateProfile = data => {
-    Alert.alert(
-      'Peringatan!!',
-      'Apakah anda ingin update data pribadi?',
-      [
-        {text: 'Tidak', onPress: () => console.log('Batal update profile')},
-        {text: 'Ya', onPress: () => fetchUpdateProfile(data)},
-      ],
-      {cancelable: true},
-    );
-  };
+  }
 
   return (
     <KeyboardAvoidingView style={{flex: 1}} behavior="padding">
       <EmptyBackground />
-      <ScrollView style={{padding: 15}}>
+      <ScrollView
+        style={{padding: 15}}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={() => fetchUpdateProfile(getValues())}
+          />
+        }>
         <Header title="Perbarui Profil" onPress={() => navigation.goBack()} />
         <View style={styles.container}>
           <TouchableOpacity
             style={styles.viewProfile}
             onPress={handleImagePicker}>
             <View style={styles.imgPfp}>
-              {selectedImageCamera?.uri ? (
-                <Image
-                  source={{uri: selectedImageCamera.uri}}
-                  style={styles.image}
-                />
+              {selectedImage?.uri ? (
+                <Image source={{uri: selectedImage.uri}} style={styles.image} />
               ) : (
                 <Icon
                   name="account-circle"
@@ -169,13 +156,13 @@ export default function UpdateProfileMember({navigation}) {
             <Gap height={10} />
           </TouchableOpacity>
           <Gap height={10} />
+
           <FormInput
             name="nama_lengkap"
             placeholder="Nama lengkap.."
             autoCapitalize="words"
             control={control}
             errors={errors}
-            setValue={setValue}
           />
           <FormInput
             name="nomor_telepon"
@@ -183,7 +170,6 @@ export default function UpdateProfileMember({navigation}) {
             iconName="phone"
             control={control}
             errors={errors}
-            setValue={setValue}
           />
           <FormInput
             name="provinsi"
@@ -192,7 +178,6 @@ export default function UpdateProfileMember({navigation}) {
             autoCapitalize="words"
             control={control}
             errors={errors}
-            setValue={setValue}
           />
           <FormInput
             name="kabupaten"
@@ -201,7 +186,6 @@ export default function UpdateProfileMember({navigation}) {
             autoCapitalize="words"
             control={control}
             errors={errors}
-            setValue={setValue}
           />
           <FormInput
             name="alamat"
@@ -211,11 +195,10 @@ export default function UpdateProfileMember({navigation}) {
             multiline
             control={control}
             errors={errors}
-            setValue={setValue}
           />
           <ButtonAction
             title="Perbarui Profil"
-            onPress={handleSubmit(onSubmit)}
+            onPress={handleSubmit(fetchUpdateProfile)}
             backgroundColor={colors.BLUE}
             loading={isLoading}
           />
@@ -247,15 +230,6 @@ const styles = StyleSheet.create({
   },
   icon: {
     position: 'absolute',
-  },
-  textLoading: {
-    position: 'absolute',
-    width: '100%',
-    height: '100%',
-    textAlign: 'center',
-    textAlignVertical: 'center',
-    color: colors.BLACK,
-    fontStyle: 'italic',
   },
   container: {
     padding: 15,
