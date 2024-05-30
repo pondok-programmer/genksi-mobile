@@ -82,7 +82,6 @@ const ProfileMember = () => {
     }
   };
 
-  // // Get full URL for photo
   const getPhotoUrl = path => {
     const baseURL = 'https://genksi.ejctechnology.com/';
     return `${baseURL}${path}`;

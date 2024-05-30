@@ -10,9 +10,21 @@ import Product from './Product/Product';
 import Register from './Register/Register';
 import SplashScreen from './SplashScreen/SplashScreen';
 import Teknisi from './Teknisi/Teknisi';
+import OrderCctv from './TeknisiMain/OrderCctv';
+import OrderScreenTeknisi from './TeknisiMain/OrderScreenTeknisi';
+import ProductTeknisi from './TeknisiMain/ProductTeknisi';
+import ProdukScreenTeknisi from './TeknisiMain/ProdukScreenTeknisi';
+import ProfileScreenTeknisi from './TeknisiMain/ProfileScreenTeknisi';
+import Transaksi from './TeknisiMain/Transaksi';
 import LibDemo from './__test__/LibDemo.test';
 
 export {
+  OrderCctv,
+  ProductTeknisi,
+  Transaksi,
+  ProfileScreenTeknisi,
+  OrderScreenTeknisi,
+  ProdukScreenTeknisi,
   RiwayatOrderMain,
   ProfileMain,
   HomeMain,

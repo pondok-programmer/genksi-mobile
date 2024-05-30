@@ -29,5 +29,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     elevation: 3,
     alignItems: 'center',
+    width: 200,
   },
 });

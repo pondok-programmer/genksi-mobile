@@ -1,15 +1,16 @@
-import {Button, StyleSheet, Text, View} from 'react-native';
-import React from 'react';
 import messaging from '@react-native-firebase/messaging';
+import React from 'react';
+import {Button, StyleSheet, Text, View} from 'react-native';
 
 export default function FCMdemo() {
-  async function sendNotificationtoAquos() {
+  async function sendNotificationtoInfinix() {
     const message = {
       data: {
         title: 'Hello',
         body: 'World',
       },
-      token: 'the-token',
+      token:
+        'eRbj4648T0aDGQQsvmF9dw:APA91bH7iLMMGj6w-tvpXjgIZPpGwC5jAMp8fz0eRq5AnolnqH41Vrkfu59WCylKFepjpU-T1pUKyDoIU6PkOSfenfvxFCoqIlomrpy2DkDvEkskW7tCOP3j3i8s9qqnvRijGcBMhhgz',
     };
 
     await messaging().sendMessage(message);
@@ -22,7 +23,7 @@ export default function FCMdemo() {
         body: 'World',
       },
       token:
-        'dxOTqgrDTuGRaJ6Lu1Lkk7:APA91bHdV8w17lzcHcHZdsaGS3Y7aHpKlZOurxYqVRHQKZfDMZrGMPixuaWVth_9T-YfcgJ0Ep1f9Z3KJw35U4EQ17SR2iAnQVwFLf46TfPljiuqc6JC5eZ3s8_uDZG10CObLHck-gna',
+        'eRbj4648T0aDGQQsvmF9dw:APA91bH7iLMMGj6w-tvpXjgIZPpGwC5jAMp8fz0eRq5AnolnqH41Vrkfu59WCylKFepjpU-T1pUKyDoIU6PkOSfenfvxFCoqIlomrpy2DkDvEkskW7tCOP3j3i8s9qqnvRijGcBMhhgz',
     };
 
     await messaging().sendMessage({});
@@ -31,22 +32,25 @@ export default function FCMdemo() {
   return (
     <View style={{marginTop: 50}}>
       <Text>LibDemo</Text>
-      <Button title="kirim notifikasi ke samsung" onPress={null} />
       <Button
-        title="get fcm token samsung"
+        title="kirim notifikasi ke Oppo"
+        onPress={sendNotificationtoSamsung}
+      />
+      <Button
+        title="get fcm token Oppo"
         onPress={async () => {
           try {
             await messaging().registerDeviceForRemoteMessages();
             const token = await messaging().getToken();
-            console.log('the token samsung:', token);
+            console.log('the token Oppo:', token);
           } catch (error) {
             console.log('the error:', error.message);
           }
         }}
       />
       <Button
-        title="send notification to aquos"
-        onPress={sendNotificationtoAquos}
+        title="send notification to Infinix"
+        onPress={sendNotificationtoInfinix}
       />
       <Button
         title="get fcm token infinix"
@@ -54,7 +58,7 @@ export default function FCMdemo() {
           try {
             await messaging().registerDeviceForRemoteMessages();
             const token = await messaging().getToken();
-            console.log('the token infinix:', token);
+            console.log('the token Infinix:', token);
           } catch (error) {
             console.log('the error:', error.message);
           }
@@ -65,15 +69,3 @@ export default function FCMdemo() {
 }
 
 const styles = StyleSheet.create({});
-
-// // ! CONTOH MENGUNAKAN REDUX
-// import {View, Text} from 'react-native';
-// import React from 'react';
-
-// export default function LibDemo() {
-//   return (
-//     <View>
-//       <Text>LibDemo.test</Text>
-//     </View>
-//   );
-// }

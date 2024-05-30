@@ -1,17 +1,19 @@
-import Map from './components/Map';
 import Dasboard from './components/Dasboard';
-import ProductTeknisi from './components/ProductTeknisi';
-import Profile from './components/Profile';
+import LoadingScreen from './components/LoadingScreen';
+import Map from './components/Map';
+import OrderDetailComponent from './components/OrderDetailComponent';
+import ProductItemComponent from './components/ProductItemComponent';
+import ProfileDetailItem from './components/ProfileDetailItem';
+import ProfileImage from './components/ProfileImage';
 import UpdateProfile from './components/UpdateProfile';
-import Transaksi from './components/Transaksi';
-import OrderCctv from './components/OrderCctv';
 
 export {
+  OrderDetailComponent,
+  LoadingScreen,
   Map,
+  ProductItemComponent,
+  ProfileImage,
+  ProfileDetailItem,
   Dasboard,
-  ProductTeknisi,
-  Profile,
   UpdateProfile,
-  Transaksi,
-  OrderCctv,
 };

@@ -29,7 +29,7 @@ export default function SplashScreen({navigation}) {
 
       if (token) {
         if (userRole === 'teknisi') {
-          navigation.replace('Teknisi');
+          navigation.replace('BottomTopTeknisi');
         } else if (userRole === 'distributor') {
           navigation.replace('DistributorHome');
         } else if (userRole === 'member') {

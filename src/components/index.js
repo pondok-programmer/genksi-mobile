@@ -5,8 +5,10 @@ import EmptyBackground from './screens/EmptyBackground';
 import Gap from './screens/Gap';
 import Header from './screens/Header';
 import SearchInput from './screens/SearchInput';
+import Tasbar from './screens/Tasbar';
 
 export {
+  Tasbar,
   Styles,
   SearchInput,
   Gap,

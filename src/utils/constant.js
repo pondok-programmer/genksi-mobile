@@ -28,4 +28,5 @@ export const colors = {
   secondary200: '#b39ddb',
   secondary800: '#4527a0',
   NAVY: '#2E3A59',
+  Dongker: '#131150',
 };

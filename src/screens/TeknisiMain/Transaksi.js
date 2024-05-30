@@ -1,15 +1,19 @@
 import React, {useState} from 'react';
-import {StyleSheet, Text, View, FlatList, Image} from 'react-native';
-import {EmptyBackground, Header} from '../../../components';
+import {
+  Alert,
+  FlatList,
+  Image,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import {IconTrash} from '../../assets';
+import {colors} from '../../utils/constant';
 
 export default function Transaksi({navigation}) {
   const [ready, setReady] = useState(true);
   const [dataTransaksi, setDataTransaksi] = useState(null);
-
-  setTimeout(() => {
-    setReady(false);
-    setDataTransaksi(transactions);
-  }, 1000);
 
   const transactions = [
     {
@@ -18,9 +22,9 @@ export default function Transaksi({navigation}) {
       amount: 100,
       date: '2023-12-04',
       description:
-        'Owing to the wide experience in this domain, we are instrumental in offering Indoor CCTV Camera to our clients.',
+        'Owing to the wide experience in this domain, we are instrumental in offering',
       buyer: 'Suparjinem',
-      brand: 'Brand A', // Tambahkan properti brand
+      brand: 'Brand A',
       imageUri:
         'https://image.made-in-china.com/2f0j00EBRQnTjcgMoV/CCTV-Camera-HKD-80830-.jpg',
     },
@@ -30,12 +34,43 @@ export default function Transaksi({navigation}) {
       amount: 150,
       date: '2023-12-03',
       description:
-        'Owing to the wide experience in this domain, we are instrumental in offering Indoor CCTV Camera to our clients.',
+        'Owing to the wide experience in this domain, we are instrumental ',
       buyer: 'suparman',
-      brand: 'Brand B', // Tambahkan properti brand
+      brand: 'Brand B',
       imageUri: 'https://4.imimg.com/data4/RU/NM/MY-6509051/hd-cctv-camera.jpg',
     },
   ];
+
+  React.useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      setReady(false);
+      setDataTransaksi(transactions);
+    }, 1000);
+
+    return () => clearTimeout(timeoutId);
+  }, []);
+
+  const handleDelete = id => {
+    Alert.alert(
+      'Perhatian!',
+      'Apakah Anda akan menghapus riwayat transaksi?',
+      [
+        {
+          text: 'Tidak',
+          style: 'cancel',
+        },
+        {
+          text: 'OK',
+          onPress: () => {
+            setDataTransaksi(prevData =>
+              prevData.filter(item => item.id !== id),
+            );
+          },
+        },
+      ],
+      {cancelable: false},
+    );
+  };
 
   const renderTransaction = ({item}) => (
     <View style={styles.transactionItem}>
@@ -49,7 +84,12 @@ export default function Transaksi({navigation}) {
           <Text style={styles.transactionBuyer}>Buyer: {item.buyer}</Text>
           <Text style={styles.transactionBrand}>Brand: {item.brand}</Text>
           <Text style={styles.transactionAmount}>Amount: ${item.amount}</Text>
-          <Text style={styles.transactionDate}>Date: {item.date}</Text>
+          <View style={styles.transactionFooter}>
+            <Text style={styles.transactionDate}>Date: {item.date}</Text>
+            <TouchableOpacity onPress={() => handleDelete(item.id)}>
+              <Image source={IconTrash} style={{height: 20, width: 20}} />
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
     </View>
@@ -57,18 +97,16 @@ export default function Transaksi({navigation}) {
 
   return (
     <View style={{flex: 1}}>
-      <EmptyBackground />
-      <Header title="Transaksi" onPress={() => navigation.goBack()} />
       {ready ? (
         <View style={styles.ViewLoading}>
           <Text style={[styles.textLoading, {fontSize: 16}]}>
-            Memuat formulir
+            Memuat formulir...
           </Text>
         </View>
       ) : (
-        <View style={{padding: 20}}>
+        <View style={{padding: 25}}>
           <FlatList
-            data={transactions}
+            data={dataTransaksi}
             renderItem={renderTransaction}
             keyExtractor={item => item.id.toString()}
           />
@@ -85,7 +123,7 @@ const styles = StyleSheet.create({
     height: '100%',
     textAlign: 'center',
     textAlignVertical: 'center',
-    color: 'grey',
+    color: colors.GRAYDEFAULT,
     flex: 1,
     fontStyle: 'italic',
   },
@@ -94,23 +132,15 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  header: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    marginBottom: 20,
-    textAlign: 'center',
-    color: '#333',
-  },
   transactionItem: {
     marginBottom: 20,
-    backgroundColor: '#fff',
+    backgroundColor: colors.WHITE,
     borderRadius: 10,
-    elevation: 4,
-    padding: 10,
+    elevation: 2,
+    padding: 5,
   },
   transactionInfo: {
     flexDirection: 'row',
-    elevation: 10,
   },
   transactionImage: {
     width: 80,
@@ -142,8 +172,13 @@ const styles = StyleSheet.create({
   transactionAmount: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: 'green',
+    color: colors.GREEN,
     marginTop: 5,
+  },
+  transactionFooter: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
   transactionDate: {
     fontSize: 12,

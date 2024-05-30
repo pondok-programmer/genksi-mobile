@@ -49,7 +49,7 @@ export default function Login({navigation}) {
 
       if (response.data.message.includes('teknisi')) {
         await EncryptedStorage.setItem('userRole', 'teknisi');
-        navigation.replace('Teknisi');
+        navigation.replace('BottomTopTeknisi');
         ToastAndroid.show('Selamat datang', ToastAndroid.SHORT);
       } else if (response.data.message.includes('member')) {
         await EncryptedStorage.setItem('userRole', 'member');

@@ -22,29 +22,26 @@ import {
   MapsMember,
   UpdateProfileMember,
 } from '../features/HomeMain';
-import {
-  Dasboard,
-  Map,
-  OrderCctv,
-  ProductTeknisi,
-  Profile,
-  Transaksi,
-  UpdateProfile,
-} from '../features/Teknisi';
+import {Dasboard, Map, UpdateProfile} from '../features/Teknisi';
 import {
   Distributor,
   HomeMain,
   Korwil,
-  LibDemo,
   Login,
   MapKorwil,
   OnBoarding,
+  OrderCctv,
+  OrderScreenTeknisi,
   Product,
+  ProductTeknisi,
+  ProdukScreenTeknisi,
   ProfileMain,
+  ProfileScreenTeknisi,
   Register,
   RiwayatOrderMain,
   SplashScreen,
   Teknisi,
+  Transaksi,
 } from '../screens';
 
 const Stack = createNativeStackNavigator();
@@ -99,6 +96,56 @@ function Main() {
   );
 }
 
+function BottomTopTeknisi() {
+  const [backgroundColor, setBackgroundColor] = useState('#000000');
+
+  useFocusEffect(() => {
+    setBackgroundColor('#ffffff');
+    return () => {
+      setBackgroundColor('#000000');
+    };
+  });
+
+  return (
+    <Tab.Navigator
+      initialRouteName="Produk"
+      activeColor="rgb(0,93,255)"
+      inactiveColor="#9E9E9E"
+      barStyle={{backgroundColor: backgroundColor}}>
+      <Tab.Screen
+        name="Produk"
+        component={ProdukScreenTeknisi}
+        options={{
+          tabBarLabel: 'Produk',
+          tabBarIcon: ({color}) => (
+            <Icon name="folder" color={color} size={26} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Order"
+        component={OrderScreenTeknisi}
+        options={{
+          tabBarLabel: 'Order',
+          tabBarIcon: ({color}) => (
+            <Icon name="cart-variant" color={color} size={26} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Profile"
+        component={ProfileScreenTeknisi}
+        options={{
+          tabBarLabel: 'Profile',
+          tabBarIcon: ({color}) => (
+            <Icon name="account" color={color} size={26} />
+          ),
+        }}
+      />
+    </Tab.Navigator>
+  );
+}
+
 export default function Navigator() {
   const navigation = useNavigation();
   const [initialRouteName, setInitialRouteName] = useState('SplashScreen');
@@ -116,7 +163,7 @@ export default function Navigator() {
         'Notification caused app to open from background state:',
         remoteMessage.notification,
       );
-      // navigation.navigate('Product');
+      navigation.navigate('Product');
     });
 
     // handle notifikasi jika aplikasi keluar
@@ -145,18 +192,18 @@ export default function Navigator() {
         statusBarTranslucent: true,
       }}
       initialRouteName={'SplashScreen'}>
+      {/* <Stack.Screen name="LibDemo" component={LibDemo} /> */}
+      {/* <Stack.Screen name="FCMdemo" component={FCMdemo} /> */}
       <Stack.Screen name="SplashScreen" component={SplashScreen} />
       <Stack.Screen name="OnBoarding" component={OnBoarding} />
       <Stack.Screen name="Login" component={Login} />
       <Stack.Screen name="Register" component={Register} />
-      <Stack.Screen name="LibDemo" component={LibDemo} />
       <Stack.Screen name="Product" component={Product} />
       <Stack.Screen name="Korwil" component={Korwil} />
       <Stack.Screen name="Teknisi" component={Teknisi} />
       <Stack.Screen name="ProductTeknisi" component={ProductTeknisi} />
       <Stack.Screen name="Dasboard" component={Dasboard} />
       <Stack.Screen name="MapTeknisi" component={Map} />
-      <Stack.Screen name="ProfileTeknisi" component={Profile} />
       <Stack.Screen name="UpdateProfile" component={UpdateProfile} />
       <Stack.Screen name="Menu" component={Menu} />
       <Stack.Screen name="TransaksiTeknisi" component={Transaksi} />
@@ -177,6 +224,7 @@ export default function Navigator() {
       <Stack.Screen name="MapsMember" component={MapsMember} />
       <Stack.Screen name="DetailProductMember" component={DetailProduct} />
       <Stack.Screen name="SuccesCheckOut" component={LayerSuccesPage} />
+      <Stack.Screen name="BottomTopTeknisi" component={BottomTopTeknisi} />
       <Stack.Screen
         name="UpdateProfileMember"
         component={UpdateProfileMember}

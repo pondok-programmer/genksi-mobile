@@ -12,6 +12,9 @@ import ImgGoggleMap from './images/google-maps.png';
 import ImgCCTV from './images/images_cctv.png';
 import ImgNothingPhoto from './images/nothingPhoto.jpg';
 
+import IconBell from './icons/Bell.png';
+import IconMenu2 from './icons/Menu_Alt_05.png';
+import IconMessage from './icons/Message.png';
 import IconProduct from './icons/box.png';
 import IconChecklist from './icons/checklist.png';
 import IconDangerous from './icons/dangerous.png';
@@ -25,6 +28,9 @@ import IconShoppingDasboard from './icons/shopping.png';
 import IconTrash from './icons/trash.png';
 
 export {
+  IconMessage,
+  IconBell,
+  IconMenu2,
   ImgNothingPhoto,
   IconTrash,
   IconDangerous,
