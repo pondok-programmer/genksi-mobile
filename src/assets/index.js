@@ -12,34 +12,28 @@ import ImgGoggleMap from './images/google-maps.png';
 import ImgCCTV from './images/images_cctv.png';
 import ImgNothingPhoto from './images/nothingPhoto.jpg';
 
-import IconBell from './icons/Bell.png';
 import IconMenu2 from './icons/Menu_Alt_05.png';
-import IconMessage from './icons/Message.png';
-import IconProduct from './icons/box.png';
 import IconChecklist from './icons/checklist.png';
 import IconDangerous from './icons/dangerous.png';
-import IconKategori from './icons/kategoriProduct.png';
+import IconKategoriProduk from './icons/kategoriProduct.png';
 import IconLeft from './icons/left-arrow.png';
-import IconMenu from './icons/menu.png';
 import IconProfile from './icons/profile.png';
-import IconRole from './icons/setting.png';
-import IconShopping from './icons/shopping-cart.png';
-import IconShoppingDasboard from './icons/shopping.png';
 import IconTrash from './icons/trash.png';
 
 export {
-  IconMessage,
-  IconBell,
+  IconKategoriProduk,
   IconMenu2,
-  ImgNothingPhoto,
   IconTrash,
   IconDangerous,
+  IconProfile,
+  IconLeft,
+  IconChecklist,
+  ImgNothingPhoto,
   ImgWarning,
   ImgProdukCCTV,
   ImgProdukCCTV2,
   ImgProdukCCTV3,
   ImgMaps,
-  IconShoppingDasboard,
   ImgCCTV,
   ImgBackground,
   ImgSplass,
@@ -47,12 +41,4 @@ export {
   ImgCheckOut,
   ImgGoggleMap,
   ImgBg,
-  IconProfile,
-  IconProduct,
-  IconMenu,
-  IconLeft,
-  IconShopping,
-  IconChecklist,
-  IconRole,
-  IconKategori,
 };

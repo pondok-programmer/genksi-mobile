@@ -47,22 +47,22 @@ export default function Login({navigation}) {
         response.data.authorization.token,
       );
 
-      if (response.data.message.includes('teknisi')) {
-        await EncryptedStorage.setItem('userRole', 'teknisi');
-        navigation.replace('BottomTopTeknisi');
-        ToastAndroid.show('Selamat datang', ToastAndroid.SHORT);
+      if (response.data.message.includes('koordinator_teknisi')) {
+        await EncryptedStorage.setItem('userRole', 'koordinator_teknisi');
+        navigation.replace('Korwil');
+        ToastAndroid.show(response.data.message, ToastAndroid.SHORT);
       } else if (response.data.message.includes('member')) {
         await EncryptedStorage.setItem('userRole', 'member');
         navigation.replace('MainNavigator');
-        ToastAndroid.show('Selamat datang', ToastAndroid.SHORT);
+        ToastAndroid.show(response.data.message, ToastAndroid.SHORT);
       } else if (response.data.message.includes('distributor')) {
         await EncryptedStorage.setItem('userRole', 'distributor');
         navigation.replace('DistributorHome');
-        ToastAndroid.show('Selamat datang', ToastAndroid.SHORT);
-      } else if (response.data.message.includes('koordinator_teknisi')) {
-        await EncryptedStorage.setItem('userRole', 'koordinator_teknisi');
-        navigation.replace('Korwil');
-        ToastAndroid.show('Selamat datang', ToastAndroid.SHORT);
+        ToastAndroid.show(response.data.message, ToastAndroid.SHORT);
+      } else if (response.data.message.includes('teknisi')) {
+        await EncryptedStorage.setItem('userRole', 'teknisi');
+        navigation.replace('BottomTopTeknisi');
+        ToastAndroid.show(response.data.message, ToastAndroid.SHORT);
       } else {
         navigation.replace('Login');
       }

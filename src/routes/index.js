@@ -22,7 +22,7 @@ import {
   MapsMember,
   UpdateProfileMember,
 } from '../features/HomeMain';
-import {Dasboard, Map, UpdateProfile} from '../features/Teknisi';
+import {UpdateProfile} from '../features/Teknisi';
 import {
   Distributor,
   HomeMain,
@@ -40,7 +40,6 @@ import {
   Register,
   RiwayatOrderMain,
   SplashScreen,
-  Teknisi,
   Transaksi,
 } from '../screens';
 
@@ -200,10 +199,7 @@ export default function Navigator() {
       <Stack.Screen name="Register" component={Register} />
       <Stack.Screen name="Product" component={Product} />
       <Stack.Screen name="Korwil" component={Korwil} />
-      <Stack.Screen name="Teknisi" component={Teknisi} />
       <Stack.Screen name="ProductTeknisi" component={ProductTeknisi} />
-      <Stack.Screen name="Dasboard" component={Dasboard} />
-      <Stack.Screen name="MapTeknisi" component={Map} />
       <Stack.Screen name="UpdateProfile" component={UpdateProfile} />
       <Stack.Screen name="Menu" component={Menu} />
       <Stack.Screen name="TransaksiTeknisi" component={Transaksi} />

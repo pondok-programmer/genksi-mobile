@@ -141,6 +141,7 @@ const styles = StyleSheet.create({
   },
   transactionInfo: {
     flexDirection: 'row',
+    alignItems: 'center',
   },
   transactionImage: {
     width: 80,

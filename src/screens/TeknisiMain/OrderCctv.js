@@ -71,7 +71,10 @@ export default function OrderCctv({navigation}) {
           stickyHeaderHiddenOnScroll
           style={styles.container}>
           <View style={styles.viewImgProduct}>
-            <Image source={ImgCCTV} style={{width: '80%', height: '85%'}} />
+            <Image
+              source={ImgCCTV}
+              style={{width: '80%', height: 200, alignSelf: 'center'}}
+            />
           </View>
           <Text style={styles.textProductTitle}>
             {selectedProduct?.nama_produk}
@@ -136,8 +139,8 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     elevation: 5,
     backgroundColor: colors.WHITE,
-    alignItems: 'center',
-    justifyContent: 'center',
+    // alignItems: 'center',
+    // justifyContent: 'center',
   },
   container: {
     width: '100%',

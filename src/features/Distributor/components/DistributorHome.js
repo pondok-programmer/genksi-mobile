@@ -1,28 +1,26 @@
+import React, {useEffect, useState} from 'react';
 import {
-  StyleSheet,
-  Text,
-  View,
-  Image,
-  ToastAndroid,
+  ActivityIndicator,
   Alert,
   Dimensions,
-  ActivityIndicator,
+  Image,
+  StyleSheet,
+  Text,
+  ToastAndroid,
   TouchableOpacity,
+  View,
 } from 'react-native';
-import React, {useEffect, useState} from 'react';
-import {Gap, Styles} from '../../../components';
 import EncryptedStorage from 'react-native-encrypted-storage';
-import api from '../../../services/axiosInstance';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {colors} from '../../../utils/constant';
 import {
   IconChecklist,
-  IconProduct,
+  IconKategoriProduk,
   IconProfile,
-  IconKategori,
   ImgCheckOut,
   ImgGoggleMap,
 } from '../../../assets';
+import {Gap, Styles} from '../../../components';
+import api from '../../../services/axiosInstance';
+import {colors} from '../../../utils/constant';
 
 const height = Dimensions.get('window').height;
 const width = Dimensions.get('window').width;
@@ -137,7 +135,10 @@ export default function DistributorHome({navigation}) {
           <TouchableOpacity
             style={styles.box}
             onPress={() => navigation.navigate('Kategori')}>
-            <Image source={IconKategori} style={{width: 40, height: 40}} />
+            <Image
+              source={IconKategoriProduk}
+              style={{width: 40, height: 40}}
+            />
             <Text style={styles.txtDasboard}>Kategori Product</Text>
           </TouchableOpacity>
         </View>

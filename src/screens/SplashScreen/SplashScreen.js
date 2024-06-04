@@ -6,8 +6,6 @@ import {Gap} from '../../components';
 import {colors} from '../../utils/constant';
 
 export default function SplashScreen({navigation}) {
-  // const {token} = useSelector(state => state.auth);
-
   async function handleSplash() {
     // try {
     //   const credential = await EncryptedStorage.getItem('user_credential');
@@ -28,14 +26,14 @@ export default function SplashScreen({navigation}) {
       const userRole = await EncryptedStorage.getItem('userRole');
 
       if (token) {
-        if (userRole === 'teknisi') {
+        if (userRole === 'koordinator_teknisi') {
+          navigation.replace('Korwil');
+        } else if (userRole === 'teknisi') {
           navigation.replace('BottomTopTeknisi');
         } else if (userRole === 'distributor') {
           navigation.replace('DistributorHome');
         } else if (userRole === 'member') {
           navigation.replace('MainNavigator');
-        } else if (userRole === 'Koordinator_teknisi') {
-          navigation.replace('Korwil');
         } else {
           navigation.replace('Login');
         }
