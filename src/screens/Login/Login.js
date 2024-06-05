@@ -49,7 +49,7 @@ export default function Login({navigation}) {
 
       if (response.data.message.includes('koordinator_teknisi')) {
         await EncryptedStorage.setItem('userRole', 'koordinator_teknisi');
-        navigation.replace('Korwil');
+        navigation.replace('BottomTopKoortek');
         ToastAndroid.show(response.data.message, ToastAndroid.SHORT);
       } else if (response.data.message.includes('member')) {
         await EncryptedStorage.setItem('userRole', 'member');

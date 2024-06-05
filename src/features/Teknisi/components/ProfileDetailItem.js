@@ -19,12 +19,12 @@ const styles = StyleSheet.create({
     color: colors.BLACK,
     fontWeight: '500',
   },
-  detailLabel: {
-    fontWeight: '500',
-    fontSize: 16,
-    color: colors.BLACK,
-    textAlign: 'center',
-  },
+  // detailLabel: {
+  //   fontWeight: '500',
+  //   fontSize: 16,
+  //   color: colors.BLACK,
+  //   textAlign: 'center',
+  // },
   detailValue: {
     fontWeight: '500',
     fontSize: 16,

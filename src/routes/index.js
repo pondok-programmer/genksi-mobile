@@ -24,8 +24,10 @@ import {
 } from '../features/HomeMain';
 import {UpdateProfile} from '../features/Teknisi';
 import {
+  AddNewTeknisi,
   Distributor,
   HomeMain,
+  HomeScreenKoortek,
   Korwil,
   Login,
   MapKorwil,
@@ -36,6 +38,7 @@ import {
   ProductTeknisi,
   ProdukScreenTeknisi,
   ProfileMain,
+  ProfileScreenKoortek,
   ProfileScreenTeknisi,
   Register,
   RiwayatOrderMain,
@@ -145,6 +148,56 @@ function BottomTopTeknisi() {
   );
 }
 
+function BottomTopKoortek() {
+  const [backgroundColor, setBackgroundColor] = useState('#000000');
+
+  useFocusEffect(() => {
+    setBackgroundColor('#ffffff');
+    return () => {
+      setBackgroundColor('#000000');
+    };
+  });
+
+  return (
+    <Tab.Navigator
+      initialRouteName="Home"
+      activeColor="rgb(0,93,255)"
+      inactiveColor="#9E9E9E"
+      barStyle={{backgroundColor: backgroundColor}}>
+      <Tab.Screen
+        name="Home"
+        component={HomeScreenKoortek}
+        options={{
+          tabBarLabel: 'Home',
+          tabBarIcon: ({color}) => (
+            <Icon name="folder" color={color} size={26} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Add User"
+        component={AddNewTeknisi}
+        options={{
+          tabBarLabel: 'Add User',
+          tabBarIcon: ({color}) => (
+            <Icon name="cart-variant" color={color} size={26} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Profile"
+        component={ProfileScreenKoortek}
+        options={{
+          tabBarLabel: 'Profile',
+          tabBarIcon: ({color}) => (
+            <Icon name="account" color={color} size={26} />
+          ),
+        }}
+      />
+    </Tab.Navigator>
+  );
+}
+
 export default function Navigator() {
   const navigation = useNavigation();
   const [initialRouteName, setInitialRouteName] = useState('SplashScreen');
@@ -221,6 +274,7 @@ export default function Navigator() {
       <Stack.Screen name="DetailProductMember" component={DetailProduct} />
       <Stack.Screen name="SuccesCheckOut" component={LayerSuccesPage} />
       <Stack.Screen name="BottomTopTeknisi" component={BottomTopTeknisi} />
+      <Stack.Screen name="BottomTopKoortek" component={BottomTopKoortek} />
       <Stack.Screen
         name="UpdateProfileMember"
         component={UpdateProfileMember}

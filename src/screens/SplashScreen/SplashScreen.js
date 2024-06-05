@@ -27,7 +27,7 @@ export default function SplashScreen({navigation}) {
 
       if (token) {
         if (userRole === 'koordinator_teknisi') {
-          navigation.replace('Korwil');
+          navigation.replace('BottomTopKoortek');
         } else if (userRole === 'teknisi') {
           navigation.replace('BottomTopTeknisi');
         } else if (userRole === 'distributor') {
