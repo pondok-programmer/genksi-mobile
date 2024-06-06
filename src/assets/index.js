@@ -15,12 +15,16 @@ import ImgNothingPhoto from './images/nothingPhoto.jpg';
 import IconMenu2 from './icons/Menu_Alt_05.png';
 import IconChecklist from './icons/checklist.png';
 import IconDangerous from './icons/dangerous.png';
+import IconDecoment from './icons/decoment.png';
 import IconKategoriProduk from './icons/kategoriProduct.png';
 import IconLeft from './icons/left-arrow.png';
+import IconPlus from './icons/plus.png';
 import IconProfile from './icons/profile.png';
 import IconTrash from './icons/trash.png';
 
 export {
+  IconDecoment,
+  IconPlus,
   IconKategoriProduk,
   IconMenu2,
   IconTrash,
