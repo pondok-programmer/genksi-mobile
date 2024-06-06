@@ -20,7 +20,7 @@ const styles = StyleSheet.create({
     height: '100%',
     textAlign: 'center',
     textAlignVertical: 'center',
-    color: colors.GRAYDEFAULT,
+    color: colors.BLACK,
     flex: 1,
     fontStyle: 'italic',
   },

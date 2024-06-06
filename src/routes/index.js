@@ -13,7 +13,6 @@ import {
   MapTeknisi,
   ProfileDistributor,
 } from '../features/Distributor';
-import {Menu} from '../features/Home';
 import {
   DasboardMember,
   DetailProduct,
@@ -254,7 +253,6 @@ export default function Navigator() {
       <Stack.Screen name="Korwil" component={Korwil} />
       <Stack.Screen name="ProductTeknisi" component={ProductTeknisi} />
       <Stack.Screen name="UpdateProfile" component={UpdateProfile} />
-      <Stack.Screen name="Menu" component={Menu} />
       <Stack.Screen name="TransaksiTeknisi" component={Transaksi} />
       <Stack.Screen name="OrderCctvTeknisi" component={OrderCctv} />
       <Stack.Screen name="Distributor" component={Distributor} />

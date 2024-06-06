@@ -88,7 +88,7 @@ export default function ProfileScreenKoortek({navigation}) {
         <View style={styles.bodyImageProf}>
           <ProfileImageKoortek photoProfile={photoProfile} isReady={isReady} />
           {isReady ? (
-            <Text>{dataProfile.nama_lengkap}</Text>
+            <Text style={styles.txtName}>{dataProfile.nama_lengkap}</Text>
           ) : (
             <ActivityIndicator size={'small'} style={colors.PRIMARY} />
           )}
@@ -142,6 +142,13 @@ export default function ProfileScreenKoortek({navigation}) {
 }
 
 const styles = StyleSheet.create({
+  txtName: {
+    color: colors.BLACK,
+    fontSize: 20,
+    margin: 20,
+    fontWeight: '500',
+    alignSelf: 'center',
+  },
   ContentProfile: {
     backgroundColor: 'dodgerblue',
     alignItems: 'center',
