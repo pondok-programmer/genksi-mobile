@@ -15,7 +15,7 @@ export default function SearchInput({
       <Icon name={'magnify'} color={'black'} size={30} />
       <Gap height={3} />
       <TextInput
-        placeholder={placeholder ? 'Search' : 'Cari produk cctv'}
+        placeholder={placeholder}
         placeholderTextColor={placeholderTextColor}
         style={{color: colors.BLACK}}
       />

@@ -18,6 +18,7 @@ export default function Tasbar({onPressIconMenu}) {
           {/* <Image source={IconMenu2} style={{width: 40, height: 40}} /> */}
         </TouchableNativeFeedback>
         <SearchInput
+          placeholder={'Cari data teknisi'}
           placeholderTextColor={colors.GREY}
           backgroundColor={colors.WHITE}
           borderRadius={12}

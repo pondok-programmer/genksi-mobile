@@ -10,7 +10,10 @@ export default function AddNewProductSection() {
       <TouchableOpacity style={styles.Fristbox}>
         <View style={{margin: 15, gap: 45}}>
           <View style={styles.ViewAdd}>
-            <Image source={IconPlus} style={{height: 30, width: 30}} />
+            <Image
+              source={IconPlus}
+              style={{height: 25, width: 27, tintColor: colors.WHITE}}
+            />
           </View>
           <Text style={styles.txtBoxNewProduk}>Add New{'\n'}Produk</Text>
         </View>
@@ -19,7 +22,10 @@ export default function AddNewProductSection() {
       <TouchableOpacity style={styles.box}>
         <View style={{margin: 15, gap: 45}}>
           <View style={styles.ViewAdd}>
-            <Image source={IconDecoment} style={{height: 30, width: 30}} />
+            <Image
+              source={IconDecoment}
+              style={{height: 25, width: 27, tintColor: colors.WHITE}}
+            />
           </View>
           <Text style={styles.txtBoxNewProduk}>
             Pengirim Permintaan{'\n'}Produk
@@ -46,7 +52,7 @@ const styles = StyleSheet.create({
   ViewAdd: {
     height: 40,
     width: 40,
-    backgroundColor: '#BDBDBD',
+    backgroundColor: 'rgb(66,13,242)',
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 8,

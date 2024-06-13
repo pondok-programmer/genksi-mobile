@@ -177,9 +177,9 @@ function BottomTopKoortek() {
         name="Add User"
         component={AddNewTeknisi}
         options={{
-          tabBarLabel: 'Add User',
+          tabBarLabel: 'Card teknisi ',
           tabBarIcon: ({color}) => (
-            <Icon name="cart-variant" color={color} size={26} />
+            <Icon name="credit-card-outline" color={color} size={26} />
           ),
         }}
       />
