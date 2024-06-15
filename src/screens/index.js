@@ -6,7 +6,6 @@ import RiwayatOrderMain from './HomeMain/RiwayatOrderMain';
 import AddNewTeknisi from './Koordinator_Teknisi/AddNewTeknisi';
 import HomeScreenKoortek from './Koordinator_Teknisi/HomeScreenKoortek';
 import ProfileScreenKoortek from './Koordinator_Teknisi/ProfileScreenKoortek';
-import Korwil from './Korwil/Korwil';
 import Login from './Login/Login';
 import OnBoarding from './OnBoarding/OnBoarding';
 import Product from './Product/Product';
@@ -39,7 +38,6 @@ export {
   OnBoarding,
   LibDemo,
   Product,
-  Korwil,
   Distributor,
   MapKorwil,
 };

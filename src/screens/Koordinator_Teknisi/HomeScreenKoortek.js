@@ -5,7 +5,7 @@ import {
   AddNewProductSection,
   NavbarComponent,
   ProdukListComponent,
-} from '../../features/Korwil';
+} from '../../features/Koortek';
 import {colors} from '../../utils/constant';
 
 export default function HomeScreenKoortek() {

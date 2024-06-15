@@ -27,7 +27,6 @@ import {
   Distributor,
   HomeMain,
   HomeScreenKoortek,
-  Korwil,
   Login,
   MapKorwil,
   OnBoarding,
@@ -250,7 +249,6 @@ export default function Navigator() {
       <Stack.Screen name="Login" component={Login} />
       <Stack.Screen name="Register" component={Register} />
       <Stack.Screen name="Product" component={Product} />
-      <Stack.Screen name="Korwil" component={Korwil} />
       <Stack.Screen name="ProductTeknisi" component={ProductTeknisi} />
       <Stack.Screen name="UpdateProfile" component={UpdateProfile} />
       <Stack.Screen name="TransaksiTeknisi" component={Transaksi} />

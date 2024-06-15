@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import {ButtonAction, Gap} from '../../components';
-import {ProfileData, ProfileImageKoortek} from '../../features/Korwil';
+import {ProfileData, ProfileImageKoortek} from '../../features/Koortek';
 import api from '../../services/axiosInstance';
 import {colors} from '../../utils/constant';
 

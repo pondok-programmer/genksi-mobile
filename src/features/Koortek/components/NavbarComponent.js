@@ -37,7 +37,7 @@ const styles = StyleSheet.create({
   imgMenu: {
     height: 39,
     width: 37,
-    backgroundColor: '#D7CCC8',
+    backgroundColor: '#536DFE',
     padding: 10,
     borderRadius: 10,
   },
