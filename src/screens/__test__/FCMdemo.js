@@ -9,8 +9,7 @@ export default function FCMdemo() {
         title: 'Hello',
         body: 'World',
       },
-      token:
-        'eRbj4648T0aDGQQsvmF9dw:APA91bH7iLMMGj6w-tvpXjgIZPpGwC5jAMp8fz0eRq5AnolnqH41Vrkfu59WCylKFepjpU-T1pUKyDoIU6PkOSfenfvxFCoqIlomrpy2DkDvEkskW7tCOP3j3i8s9qqnvRijGcBMhhgz',
+      token: 'the-token',
     };
 
     await messaging().sendMessage(message);

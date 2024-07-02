@@ -1,6 +1,6 @@
 import messaging from '@react-native-firebase/messaging';
 import React from 'react';
-import {Button, StyleSheet, Text, View} from 'react-native';
+import {Alert, Button, StyleSheet, Text, View} from 'react-native';
 
 export default function LibDemo() {
   async function sendNotificationtoInfinix() {
@@ -28,6 +28,9 @@ export default function LibDemo() {
     await messaging().sendMessage({});
   }
 
+  const test = () => {
+    Alert.alert('ini pusNotif');
+  };
   return (
     <View style={{marginTop: 50}}>
       <Text>LibDemo</Text>
@@ -45,7 +48,7 @@ export default function LibDemo() {
         }}
       />
       <Button
-        title="send notification to aquos"
+        title="send notification to infinix"
         onPress={sendNotificationtoInfinix}
       />
       <Button
@@ -60,6 +63,8 @@ export default function LibDemo() {
           }
         }}
       />
+
+      <Button title="pusnotif" onPress={test} />
     </View>
   );
 }

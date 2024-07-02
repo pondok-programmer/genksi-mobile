@@ -4,6 +4,7 @@ import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import React, {useEffect, useState} from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import NotifService from '../NotifService';
 
 import {
   DataProduct,
@@ -27,6 +28,7 @@ import {
   Distributor,
   HomeMain,
   HomeScreenKoortek,
+  LibDemo,
   Login,
   MapKorwil,
   OnBoarding,
@@ -198,42 +200,55 @@ function BottomTopKoortek() {
 
 export default function Navigator() {
   const navigation = useNavigation();
-  const [initialRouteName, setInitialRouteName] = useState('SplashScreen');
-  const [loading, setLoading] = useState(true);
+  const [initialRouteName, setInitialRouteName] = useState('LibDemo');
+  const [registerToken, setRegisterToken] = useState('');
+  const [fcmRegistered, setFcmRegistered] = useState(false);
+  console.error('fcm token', registerToken);
+
+  const onRegister = token => {
+    setRegisterToken(token?.token);
+    setFcmRegistered(true);
+  };
+
+  const onNotif = message => {
+    console.log(message);
+    notif.localNotif(message?.title, message?.message, null);
+  };
+  const notif = new NotifService(onRegister, onNotif);
 
   useEffect(() => {
-    // handle notifikasi jika notifikasi masuk dan aplikasi sedang ada di latar belakang
-    messaging().setBackgroundMessageHandler(async remoteMessage => {
-      console.log('Message handled in the background!', remoteMessage);
+    const unsubscribeOnMessage = messaging().onMessage(async remoteMessage => {
+      // Handle foreground notifications
+      console.log('A new FCM message arrived!', JSON.stringify(remoteMessage));
+      // notif.localNotif();
     });
 
-    // handle notifikasi jika aplikasi terbuka dari notifikasi
-    messaging().onNotificationOpenedApp(remoteMessage => {
-      console.log(
-        'Notification caused app to open from background state:',
-        remoteMessage.notification,
-      );
-      navigation.navigate('Product');
-    });
-
-    // handle notifikasi jika aplikasi keluar
-    messaging()
-      .getInitialNotification()
-      .then(remoteMessage => {
-        if (remoteMessage) {
-          console.log(
-            'Notification caused app to open from quit state:',
-            remoteMessage.notification,
-          );
-          setInitialRouteName('Product');
-          // setInitialRouteName('Register'); // e.g. "Settings"
-        }
-        setLoading(false);
+    const unsubscribeOnNotificationOpenedApp =
+      messaging().onNotificationOpenedApp(remoteMessage => {
+        // Handle notifications when the app is opened from a background state
+        console.log(
+          'Notification opened by tapping on it:',
+          JSON.stringify(remoteMessage),
+        );
+        // notif.localNotif();
       });
+
+    const unsubscribeOnBackgroundMessage =
+      messaging().setBackgroundMessageHandler(async remoteMessage => {
+        // Handle background notifications (when the app is in the background or terminated)
+        console.log(
+          'Message handled in the background!',
+          JSON.stringify(remoteMessage),
+        );
+        // notif.localNotif();
+      });
+
+    return () => {
+      unsubscribeOnMessage();
+      unsubscribeOnNotificationOpenedApp();
+      unsubscribeOnBackgroundMessage();
+    };
   }, []);
-
-  if (loading) return null;
-
   return (
     <Stack.Navigator
       screenOptions={{
@@ -241,8 +256,8 @@ export default function Navigator() {
         statusBarColor: 'transparent',
         statusBarTranslucent: true,
       }}
-      initialRouteName={'SplashScreen'}>
-      {/* <Stack.Screen name="LibDemo" component={LibDemo} /> */}
+      initialRouteName={initialRouteName}>
+      <Stack.Screen name="LibDemo" component={LibDemo} />
       {/* <Stack.Screen name="FCMdemo" component={FCMdemo} /> */}
       <Stack.Screen name="SplashScreen" component={SplashScreen} />
       <Stack.Screen name="OnBoarding" component={OnBoarding} />
